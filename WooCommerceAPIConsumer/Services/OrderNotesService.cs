@@ -5,39 +5,72 @@ namespace SharpCommerce.Services
     using System;
     using SharpCommerce.Data.Orders;
     using SharpCommerce.Web;
+    using System.Threading.Tasks;
 
     public class OrderNotesService : Service
     {
         public OrderNotesService(WoocommerceApiDriver apiDriver) : base(apiDriver) { }
 
-        // Create A Note For An Order
-        public OrderNote Create(int orderId, OrderNote newData)
+        /// <summary>
+        /// Create a Note For an Order
+        /// </summary>
+        /// <param name="orderId">The identifier of Order</param>
+        /// <param name="newData">Order Note object to be created</param>
+        /// <returns></returns>
+        public async Task<OrderNote> Create(int orderId, OrderNote newData)
         {
-            return Post(apiEndpoint: String.Format("orders/{0}/notes", orderId), toSerialize: new OrderNoteBundle { Content = newData }).Content;
+            var endPoint = String.Format("orders/{0}/notes", orderId);
+            var bundle = new OrderNoteBundle { Content = newData };
+            return (await Post(endPoint, toSerialize: bundle)).Content;
         }
 
-        // View An Order Note
-        public OrderNote Get(int orderId, int noteId)
+        /// <summary>
+        /// View an Order Note
+        /// </summary>
+        /// <param name="orderId">The identifier of Order</param>
+        /// <param name="noteId">The identifier of Note</param>
+        /// <returns></returns>
+        public async Task<OrderNote> Get(int orderId, int noteId)
         {
-            return Get<OrderNoteBundle>(apiEndpoint: String.Format("orders/{0}/notes/{1}", orderId, noteId)).Content;
+            var endPoint = String.Format("orders/{0}/notes/{1}", orderId, noteId);
+            return (await Get<OrderNoteBundle>(endPoint)).Content;
         }
 
-        // View List Of Notes From An Order
-        public IEnumerable<OrderNote> Get(int orderId)
+        /// <summary>
+        /// View List Of Notes From An Order
+        /// </summary>
+        /// <param name="orderId">The identifier of Order</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<OrderNote>> Get(int orderId)
         {
-            return this.Get<OrderNotesBundle>(apiEndpoint: String.Format("orders/{0}/notes", orderId)).Content;
+            var endPoint = String.Format("orders/{0}/notes", orderId);
+            return (await Get<OrderNotesBundle>(endPoint)).Content;
         }
 
-        // Update An Order Note
-        public OrderNote Update(int orderId, int noteId, OrderNote newData)
+        /// <summary>
+        /// Update An Order Note
+        /// </summary>
+        /// <param name="orderId">The identifier of Order</param>
+        /// <param name="noteId">The identifier of Note</param>
+        /// <param name="newData">Order Note object to be udpated</param>
+        /// <returns></returns>
+        public async Task<OrderNote> Update(int orderId, int noteId, OrderNote newData)
         {
-            return Put(apiEndpoint: String.Format("orders/{0}/notes/{1}", orderId, noteId), toSerialize: new OrderNoteBundle { Content = newData }).Content;
+            var endPoint = String.Format("orders/{0}/notes/{1}", orderId, noteId);
+            var bundle = new OrderNoteBundle { Content = newData };
+            return (await Put(endPoint, toSerialize: bundle)).Content;
         }
 
-        // Delete An Order Note
-        public string Delete(int orderId, int noteId)
+        /// <summary>
+        /// Delete An Order Note
+        /// </summary>
+        /// <param name="orderId">The identifier of Order</param>
+        /// <param name="noteId">The identifier of Note</param>
+        /// <returns></returns>
+        public async Task<string> Delete(int orderId, int noteId)
         {
-            return Delete<dynamic>(apiEndpoint: String.Format("orders/{0}/notes/{1}", orderId, noteId)).message;
+            var endpoint = String.Format("orders/{0}/notes/{1}", orderId, noteId);
+            return (await Delete<dynamic>(endpoint)).message;
         }
     }
 }
