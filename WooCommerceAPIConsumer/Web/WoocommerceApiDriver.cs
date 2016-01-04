@@ -3,6 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Net;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Threading.Tasks;
 
     public class WoocommerceApiDriver
     {
@@ -28,18 +31,19 @@
             return this.MakeApiUploadStringCall(HttpMethod.Put, apiEndpoint, parameters, jsonData);
         }
 
-        internal string Get(string apiEndpoint, Dictionary<string, string> parameters = null)
+        internal async Task<string> Get(string apiEndpoint, Dictionary<string, string> parameters = null)
         {
-            return this.MakeApiDownloadStringCall(apiEndpoint, parameters);
+            return await MakeApiDownloadStringCall(apiEndpoint, parameters);
         }
 
         // Basis for GET
-        private string MakeApiDownloadStringCall(string apiEndpoint, Dictionary<string, string> parameters = null)
+        private async Task<string> MakeApiDownloadStringCall(string apiEndpoint, Dictionary<string, string> parameters = null)
         {
-            var url = this.urlGenerator.GenerateRequestUrl(HttpMethod.Get, apiEndpoint, parameters);
-            using (var webClient = new WebClient())
+            var url = urlGenerator.GenerateRequestUrl(HttpMethod.Get, apiEndpoint, parameters);
+            using (var client = new HttpClient())
             {
-                return webClient.DownloadString(url);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                return await client.GetStringAsync(url);
             }
         }
         
