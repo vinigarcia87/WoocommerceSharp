@@ -5,6 +5,7 @@ namespace SharpCommerce.Services
     using System;
     using SharpCommerce.Data.Orders;
     using SharpCommerce.Web;
+    using System.Threading.Tasks;
 
     public class OrderService : Service
     {
@@ -18,65 +19,106 @@ namespace SharpCommerce.Services
             Refunds = new OrderRefundsService(apiDriver);
         }
 
-        // Create An Order
-        public Order Create(Order orderData)
+        /// <summary>
+        /// Create an Order
+        /// </summary>
+        /// <param name="orderData">Order object to be sent.</param>
+        /// <returns></returns>
+        public async Task<Order> Create(Order orderData)
         {
-            return Post(apiEndpoint: "orders", toSerialize: new OrderBundle { Content = orderData }).Content;
+            var bundle = new OrderBundle { Content = orderData };
+            return (await Post(apiEndpoint: "orders", toSerialize: bundle)).Content;
         }
 
-        // View An Order
-        public Order Get(int orderId)
+        /// <summary>
+        /// View an Order
+        /// </summary>
+        /// <param name="orderId">The identifier of order</param>
+        /// <returns>Order object</returns>
+        public async Task<Order> Get(int orderId)
         {
-            return this.Get<OrderBundle>(apiEndpoint: String.Format("orders/{0}", orderId)).Content;
+            var endPoint = string.Format("orders/{0}", orderId);
+            return (await Get<OrderBundle>(endPoint)).Content;
         }
 
-        // View List Of Orders
-        public IEnumerable<Order> Get(Dictionary<string, string> parameters = null)
+        /// <summary>
+        /// View List of Orders
+        /// </summary>
+        /// <param name="parameters">Parameters to filter list of orders</param>
+        /// <returns>List of Orders</returns>
+        public async Task<IEnumerable<Order>> Get(Dictionary<string, string> parameters = null)
         {
-            return Get<OrdersBundle>(apiEndpoint: "orders", parameters: parameters).Content;
+            return (await Get<OrdersBundle>(apiEndpoint: "orders", parameters: parameters)).Content;
         }
         
-        // Create/Update Multiple Orders
-        public IEnumerable<Order> CreateUpdateMany(IEnumerable<Order> ordersData)
+        /// <summary>
+        /// Create or Update Multiple Orders
+        /// </summary>
+        /// <param name="ordersData">Orders object to be created or udpated</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<Order>> CreateUpdateMany(IEnumerable<Order> ordersData)
         {
-            return Put(apiEndpoint: "orders/bulk", toSerialize: new OrdersBundle { Content = ordersData }).Content;
+            var bundle = new OrdersBundle { Content = ordersData };
+            return (await Put(apiEndpoint: "orders/bulk", toSerialize: bundle)).Content;
         }
 
-        // Update An Order
-        public Order Update(int orderId, Order newData)
+        /// <summary>
+        /// Update an Order
+        /// </summary>
+        /// <param name="orderId">The identifier of Order</param>
+        /// <param name="newData">New data that will be updated</param>
+        /// <returns>New Order Object</returns>
+        public async Task<Order> Update(int orderId, Order newData)
         {
-            return Put(apiEndpoint: String.Format("orders/{0}", orderId), toSerialize: new OrderBundle { Content = newData }).Content;
+            var endPoint = String.Format("orders/{0}", orderId);
+            var bundle = new OrderBundle { Content = newData };
+            return (await Put(endPoint, toSerialize: bundle)).Content;
         }
 
-        // Delete an Order
-        public string MoveToTrash(int id)
+        /// <summary>
+        /// Delete an Order
+        /// </summary>
+        /// <param name="id">The identifier of Order</param>
+        /// <returns></returns>
+        public async Task<string> MoveToTrash(int id)
         {
-            return Delete(id);
+            return await Delete(id);
         }
 
-        // Delete an Order Permanently
-        public string DeletePermanently(int id)
+        /// <summary>
+        /// Delete an Order Permanently
+        /// </summary>
+        /// <param name="id">The identifier of Order</param>
+        /// <returns></returns>
+        public async Task<string> DeletePermanently(int id)
         {
-            return Delete(id, force: true);
+            return await Delete(id, force: true);
         }
 
-        // View Orders Count
-        public int Count(Dictionary<string, string> parameters = null)
+        /// <summary>
+        /// View Orders Count
+        /// </summary>
+        /// <param name="parameters">Parameter to filter the orders</param>
+        /// <returns>Number of order's count</returns>
+        public async Task<int> Count(Dictionary<string, string> parameters = null)
         {
-            return Get<dynamic>(apiEndpoint: "orders/count", parameters: parameters).count; 
+            return (await Get<dynamic>("orders/count", parameters)).count; 
         }
 
-        // View List of Order Statuses 
-        public OrderStatuses GetStatuses()
+        /// <summary>
+        /// View List of Order Statuses
+        /// </summary>
+        /// <returns></returns>
+        public async Task<OrderStatuses> GetStatuses()
         {
-            return Get<OrderStatusesBundle>(apiEndpoint: "orders/statuses").Content;
+            return (await Get<OrderStatusesBundle>("orders/statuses")).Content;
         }
         
-        private string Delete(int id, bool force = false)
+        private async Task<string> Delete(int id, bool force = false)
         {
             var apiEndpoint = String.Format("orders/{0}", id);
             var parameters = new Dictionary<string, string> { { "force", force.ToString().ToLower() } };
-            return Delete<dynamic>(apiEndpoint, parameters).message;
+            return (await Delete<dynamic>(apiEndpoint, parameters)).message;
         }
     }
 }
