@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharpCommerce.Data.Products
+﻿namespace SharpCommerce.Data.Products
 {
     using Newtonsoft.Json;
 
@@ -65,6 +59,7 @@ namespace SharpCommerce.Data.Products
         /// Shows the quantity of products in this category 
         /// </summary>
         [JsonProperty("count")]
-        public bool ShowCount { get; set; }
+        public int Count { get; set; }
+
     }
 }
