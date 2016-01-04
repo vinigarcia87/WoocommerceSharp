@@ -16,19 +16,19 @@
             this.urlGenerator = new WoocommerceApiUrlGenerator(storeUrl, consumerKey, consumerSecret);
         }
 
-        internal string Delete(string apiEndpoint, Dictionary<string, string> parameters = null, string jsonData = null)
+        internal async Task<string> Delete(string apiEndpoint, Dictionary<string, string> parameters = null, string jsonData = null)
         {
-            return this.MakeApiUploadStringCall(HttpMethod.Delete, apiEndpoint, parameters, jsonData);
+            return await MakeApiUploadStringCall(HttpMethod.Delete, apiEndpoint, parameters, jsonData);
         }
 
-        internal string Post(string apiEndpoint, Dictionary<string, string> parameters = null, string jsonData = null)
+        internal async Task<string> Post(string apiEndpoint, Dictionary<string, string> parameters = null, string jsonData = null)
         {
-            return this.MakeApiUploadStringCall(HttpMethod.Post, apiEndpoint, parameters, jsonData);
+            return await MakeApiUploadStringCall(HttpMethod.Post, apiEndpoint, parameters, jsonData);
         }
 
-        internal string Put(string apiEndpoint, Dictionary<string, string> parameters = null, string jsonData = null)
+        internal async Task<string> Put(string apiEndpoint, Dictionary<string, string> parameters = null, string jsonData = null)
         {
-            return this.MakeApiUploadStringCall(HttpMethod.Put, apiEndpoint, parameters, jsonData);
+            return await MakeApiUploadStringCall(HttpMethod.Put, apiEndpoint, parameters, jsonData);
         }
 
         internal async Task<string> Get(string apiEndpoint, Dictionary<string, string> parameters = null)
@@ -48,13 +48,26 @@
         }
         
         // Basis for PUT, POST, and DELETE
-        private string MakeApiUploadStringCall(HttpMethod httpMethod, string apiEndpoint, Dictionary<string, string> parameters = null, string jsonData = null)
+        private async Task<string> MakeApiUploadStringCall(HttpMethod httpMethod, string apiEndpoint, Dictionary<string, string> parameters = null, string jsonData = null)
         {
             var url = this.urlGenerator.GenerateRequestUrl(httpMethod, apiEndpoint, parameters);
-            using (var webClient = new WebClient())
+            using (var client = new HttpClient())
             {
-                webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
-                return webClient.UploadString(url, httpMethod.ToString().ToUpper(), jsonData ?? String.Empty);
+                using (var content = new StringContent(jsonData ?? string.Empty))
+                {
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    switch (httpMethod)
+                    {
+                        case HttpMethod.Post:
+                            return await (await client.PostAsync(url, content)).Content.ReadAsStringAsync();
+                        case HttpMethod.Put:
+                            return await (await client.PutAsync(url, content)).Content.ReadAsStringAsync();
+                        case HttpMethod.Delete:
+                            return await (await client.DeleteAsync(url)).Content.ReadAsStringAsync();
+                        default:
+                            throw new ArgumentException("only POST, PUT, and DELETE allowed for this HTTP Method");
+                    }
+                }
             }
         }
     }
