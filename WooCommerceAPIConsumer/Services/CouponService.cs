@@ -5,71 +5,115 @@
 
     using SharpCommerce.Data.Coupons;
     using SharpCommerce.Web;
+    using System.Threading.Tasks;
 
     public class CouponService : Service
     {
         public CouponService(WoocommerceApiDriver apiDriver)
             : base(apiDriver) { }
 
-        // Create A Coupon
-        public Coupon Create(Coupon orderData)
+        /// <summary>
+        /// Create a Coupon
+        /// </summary>
+        /// <param name="orderData"></param>
+        /// <returns></returns>
+        public async Task<Coupon> Create(Coupon orderData)
         {
-            return Post(apiEndpoint: "coupons", toSerialize: new CouponBundle { Content = orderData }).Content;
+            var bundle = new CouponBundle { Content = orderData };
+            return (await Post(apiEndpoint: "coupons", toSerialize: bundle)).Content;
         }
 
-        // View A Coupon by id
-        public Coupon Get(int couponId)
+        /// <summary>
+        /// View a Coupon by ID
+        /// </summary>
+        /// <param name="couponId">The identifier of Coupon</param>
+        /// <returns>Specified coupon object</returns>
+        public async Task<Coupon> Get(int couponId)
         {
-            return this.Get<CouponBundle>(apiEndpoint: String.Format("coupons/{0}", couponId)).Content;
+            var endPoint = String.Format("coupons/{0}", couponId);
+            return (await Get<CouponBundle>(endPoint)).Content;
         }
 
-        // View A Coupon by Code
-        public Coupon Get(string code)
+        /// <summary>
+        /// View a Coupon by Code
+        /// </summary>
+        /// <param name="code">Code of Coupon</param>
+        /// <returns>Specified coupon object</returns>
+        public async Task<Coupon> Get(string code)
         {
-            return this.Get<CouponBundle>(apiEndpoint: String.Format("coupons/code/{0}", code)).Content;
+            var endPoint = String.Format("coupons/code/{0}", code);
+            return (await Get<CouponBundle>(endPoint)).Content;
         }
 
-        // View List Of Coupons
-        public IEnumerable<Coupon> Get(Dictionary<string, string> parameters = null)
+        /// <summary>
+        /// List of Coupons
+        /// </summary>
+        /// <param name="parameters">Parameter to filter list of coupon</param>
+        /// <returns>List of Coupon objects</returns>
+        public async Task<IEnumerable<Coupon>> Get(Dictionary<string, string> parameters = null)
         {
-            return Get<CouponsBundle>(apiEndpoint: "coupons", parameters: parameters).Content;
+            return (await Get<CouponsBundle>("coupons", parameters)).Content;
         }
 
-        // Update A Coupon
-        public Coupon Update(int couponId, Coupon newData)
+        /// <summary>
+        /// Update a Coupon
+        /// </summary>
+        /// <param name="couponId">The identifier of Coupon</param>
+        /// <param name="newData">Coupon object to be updated</param>
+        /// <returns>The new updated coupon</returns>
+        public async Task<Coupon> Update(int couponId, Coupon newData)
         {
-            return Put(apiEndpoint: String.Format("coupons/{0}", couponId), toSerialize: new CouponBundle { Content = newData }).Content;
+            var endPoint = String.Format("coupons/{0}", couponId);
+            var bundle = new CouponBundle { Content = newData };
+            return (await Put(endPoint, toSerialize: bundle)).Content;
         }
 
-        // Create/Update Multiple Coupons
-        public IEnumerable<Coupon> CreateUpdateMany(IEnumerable<Coupon> ordersData)
+        /// <summary>
+        /// Create or Update Multiple Coupon
+        /// </summary>
+        /// <param name="ordersData">Multiple coupon object to be created or updated</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<Coupon>> CreateUpdateMany(IEnumerable<Coupon> ordersData)
         {
-            return Put(apiEndpoint: "coupons/bulk", toSerialize: new CouponsBundle { Content = ordersData }).Content;
+            var bundle = new CouponsBundle { Content = ordersData };
+            return (await Put("coupons/bulk", toSerialize: bundle)).Content;
         }
 
-        // Delete A Coupon
-        public string MoveToTrash(int id)
+        /// <summary>
+        /// Delete a Coupon
+        /// </summary>
+        /// <param name="id">The identifier of coupon to be deleted</param>
+        /// <returns></returns>
+        public async Task<string> MoveToTrash(int id)
         {
-            return Delete(id);
+            return await Delete(id);
         }
 
-        // Delete a Coupon Permanently
-        public string DeletePermanently(int id)
+        /// <summary>
+        /// Delete a Coupon Permanently
+        /// </summary>
+        /// <param name="id">The identifier of coupon to be deleted</param>
+        /// <returns></returns>
+        public async Task<string> DeletePermanently(int id)
         {
-            return Delete(id, force: true);
+            return await Delete(id, force: true);
         }
 
-        private string Delete(int id, bool force = false)
+        private async Task<string> Delete(int id, bool force = false)
         {
             var apiEndpoint = String.Format("coupons/{0}", id);
             var parameters = new Dictionary<string, string> { { "force", force.ToString().ToLower() } };
-            return Delete<dynamic>(apiEndpoint, parameters).message;
+            return (await Delete<dynamic>(apiEndpoint, parameters)).message;
         }
 
-        // View Coupons Count
-        public int Count(Dictionary<string, string> parameters = null)
+        /// <summary>
+        /// View Coupon Count
+        /// </summary>
+        /// <param name="parameters">Parameter to filter list of Coupons</param>
+        /// <returns>Number of coupon count</returns>
+        public async Task<int> Count(Dictionary<string, string> parameters = null)
         {
-            return Get<dynamic>(apiEndpoint: "coupons/count", parameters: parameters).count;
+            return (await Get<dynamic>(apiEndpoint: "coupons/count", parameters: parameters)).count;
         }
     }
 }
