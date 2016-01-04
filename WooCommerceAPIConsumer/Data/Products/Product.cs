@@ -139,7 +139,7 @@ namespace SharpCommerce.Data.Products
         /// Product sale price
         /// </summary>
         [JsonProperty("sale_price")]
-        public float SalePrice { get; set; }
+        public float? SalePrice { get; set; }
 
         /// <summary>
         /// Sets the sale start date. Date in the YYYY-MM-DD format. [write-only]
@@ -169,15 +169,15 @@ namespace SharpCommerce.Data.Products
                 switch (value)
                 {
                     case "taxable":
-                        this.type = value;
+                        this.taxstatus = value;
                         return;
 
                     case "shipping":
-                        this.type = value;
+                        this.taxstatus = value;
                         return;
 
                     case "none":
-                        this.type = value;
+                        this.taxstatus = value;
                         return;
 
                     default:
@@ -195,7 +195,7 @@ namespace SharpCommerce.Data.Products
         public bool ManagingStock { get; set; }
 
         [JsonProperty("stock_quantity")]
-        public int StockQuantity { get; set; }
+        public int? StockQuantity { get; set; }
 
         [JsonProperty("in_stock")]
         public bool InStock { get; set; }
@@ -303,7 +303,7 @@ namespace SharpCommerce.Data.Products
         public string ShippingClass { get; set; }
 
         [JsonProperty("shipping_class_id")]
-        public int ShippingClassId { get; set; }
+        public int? ShippingClassId { get; set; }
 
         [JsonProperty("description")]
         public string Description { get; set; }
