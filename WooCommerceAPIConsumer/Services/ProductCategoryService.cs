@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SharpCommerce.Services
@@ -16,16 +14,24 @@ namespace SharpCommerce.Services
         public ProductCategoryService(WoocommerceApiDriver apiDriver)
             : base(apiDriver) { }
 
-        // View a Product Category
-        public ProductCategory Get(int productCategoryId)
+        /// <summary>
+        /// View a Product Categories
+        /// </summary>
+        /// <returns>a product categories</returns>
+        public async Task<ProductCategory> Get(int productCategoryId)
         {
-            return this.Get<ProductCategoryBundle>(apiEndpoint: String.Format("{0}/{1}", BaseApiEndpoint, productCategoryId)).Content;
+            var endPoint = String.Format("{0}/{1}", BaseApiEndpoint, productCategoryId);
+            return (await Get<ProductCategoryBundle>(endPoint)).Content;
         }
 
-        // View a List of Product Categories
-        public IEnumerable<ProductCategory> Get(Dictionary<string, string> parameters = null)
+        /// <summary>
+        /// View a List of Product Categories
+        /// </summary>
+        /// <param name="parameters">Parameters to filter list of product categories</param>
+        /// <returns>List of product categories</returns>
+        public async Task<IEnumerable<ProductCategory>> Get(Dictionary<string, string> parameters = null)
         {
-            return Get<ProductCategoriesBundle>(apiEndpoint: BaseApiEndpoint, parameters: parameters).Content;
+            return (await Get<ProductCategoriesBundle>(BaseApiEndpoint, parameters)).Content;
         }
 
 
