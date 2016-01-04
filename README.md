@@ -3,11 +3,11 @@ A C# client for the WooCommerce REST Api. Forked from SharCommerce by Zachary Ke
 
 ## What is the Difference
 1. Asynchronous Call
-2. Support WinRT (Move from WebClient to HttpClient)
+2. Support WinRT (Moved from WebClient to HttpClient)
 3. ...
 
 ## Usage
-Keep it simple, just instantiate the WoocommerceApiClient and you ready to go.
+Keep it simple, just instantiate the WoocommerceApiClient and you are ready to go.
 ```cs
   var api = new WoocommerceApiClient(StoreUrl, ConsumerKey, ConsumerSecret);
 ```
