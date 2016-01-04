@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SharpCommerce.Services
@@ -18,11 +16,16 @@ namespace SharpCommerce.Services
         {
         }
 
-
-        // View List Of Orders
-        public IEnumerable<Order> Get(int productId, Dictionary<string, string> parameters = null)
+        /// <summary>
+        /// View List Of Orders
+        /// </summary>
+        /// <param name="productId">A unique product identifier</param>
+        /// <param name="parameters">parameter to filter list of product's order</param>
+        /// <returns>List of product's order</returns>
+        public async Task<IEnumerable<Order>> Get(int productId, Dictionary<string, string> parameters = null)
         {
-            return Get<OrdersBundle>(apiEndpoint: String.Format("{0}/{1}/orders", BaseApiEndpoint, productId), parameters: parameters).Content;
+            var endPoint = String.Format("{0}/{1}/orders", BaseApiEndpoint, productId);
+            return (await Get<OrdersBundle>(endPoint, parameters)).Content;
         }
     }
 }
