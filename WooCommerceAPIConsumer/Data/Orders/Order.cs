@@ -7,7 +7,7 @@
     using Newtonsoft.Json;
 
     using SharpCommerce.Data.Customers;
-
+    using Newtonsoft.Json.Converters;
 
 
     [DataContract]
@@ -28,7 +28,7 @@
         [JsonProperty("completed_at")]
         public DateTime CompletedAt { get; set; }
 
-        [JsonProperty("status")]
+        [JsonProperty("status"), JsonConverter(typeof(StringEnumConverter))]
         public OrderStatus Status { get; set; }
 
         [JsonProperty("currency")]
