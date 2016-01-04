@@ -5,6 +5,7 @@ namespace SharpCommerce.Services
 {
     using SharpCommerce.Data.Products;
     using SharpCommerce.Web;
+    using System.Threading.Tasks;
 
     public class ProductService : Service
     {
@@ -22,60 +23,98 @@ namespace SharpCommerce.Services
             Reviews = new ProductReviewService(apiDriver);
         }
 
-        // Create a Product
-        public Product Create(Product productData)
+        /// <summary>
+        /// Create a product
+        /// </summary>
+        /// <param name="productData">Product object to be created</param>
+        /// <returns>Created product object</returns>
+        public async Task<Product> Create(Product productData)
         {
-            return Post(apiEndpoint: "products", toSerialize: new ProductBundle { Content = productData }).Content;
+            var bundle = new ProductBundle { Content = productData };
+            return (await Post(apiEndpoint: "products", toSerialize: bundle)).Content;
         }
 
 
-        // View a Product
-        public Product Get(int productId)
+        /// <summary>
+        /// View a Product
+        /// </summary>
+        /// <param name="productId">The identifier of product</param>
+        /// <returns>A product object</returns>
+        public async Task<Product> Get(int productId)
         {
-            return this.Get<ProductBundle>(apiEndpoint: String.Format("products/{0}", productId)).Content;
+            var endPoint = string.Format("products/{0}", productId);
+            return (await Get<ProductBundle>(endPoint)).Content;
         }
 
-        // View List of Products
-        public IEnumerable<Product> Get(Dictionary<string, string> parameters = null)
+        /// <summary>
+        /// View List of Products
+        /// </summary>
+        /// <param name="parameters">Parameters to filter list of products</param>
+        /// <returns>List of Products Object</returns>
+        public async Task<IEnumerable<Product>> Get(Dictionary<string, string> parameters = null)
         {
-            return Get<ProductsBundle>(apiEndpoint: "products", parameters: parameters).Content;
+            return (await Get<ProductsBundle>("products", parameters)).Content;
         }
 
-        // Update a Product
-        public Product Update(int productId, Product newData)
+        /// <summary>
+        /// Updated a Product
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="newData"></param>
+        /// <returns></returns>
+        public async Task<Product> Update(int productId, Product newData)
         {
-            return Put(apiEndpoint: String.Format("products/{0}", productId), toSerialize: new ProductBundle { Content = newData }).Content;
+            var endPoint = String.Format("products/{0}", productId);
+            var bundle = new ProductBundle { Content = newData };
+            return (await Put(endPoint, toSerialize: bundle)).Content;
         }
 
-        // Create/Update Multiple Products
-        public IEnumerable<Product> CreateUpdateMany(IEnumerable<Product> ordersData)
+        /// <summary>
+        /// Create or Update Multiple Products
+        /// </summary>
+        /// <param name="ordersData">Product object to be updated.</param>
+        /// <returns>Updated product object</returns>
+        public async Task<IEnumerable<Product>> CreateUpdateMany(IEnumerable<Product> ordersData)
         {
-            return Put(apiEndpoint: "products/bulk", toSerialize: new ProductsBundle { Content = ordersData }).Content;
+            var bundle = new ProductsBundle { Content = ordersData };
+            return (await Put("products/bulk", toSerialize: bundle)).Content;
         }
 
-        // Delete a Product
-        public string MoveToTrash(int id)
+        /// <summary>
+        /// Delete a Product
+        /// </summary>
+        /// <param name="id">The identifier or product</param>
+        /// <returns></returns>
+        public async Task<string> MoveToTrash(int id)
         {
-            return Delete(id);
+            return await Delete(id);
         }
 
-        // Delete a Product Permanently
-        public string DeletePermanently(int id)
+        /// <summary>
+        /// Delete a Product Permanently.
+        /// </summary>
+        /// <param name="id">The identifier of product</param>
+        /// <returns></returns>
+        public async Task<string> DeletePermanently(int id)
         {
-            return Delete(id, force: true);
+            return await Delete(id, force: true);
         }
 
-        private string Delete(int id, bool force = false)
+        private async Task<string> Delete(int id, bool force = false)
         {
             var apiEndpoint = String.Format("products/{0}", id);
             var parameters = new Dictionary<string, string> { { "force", force.ToString().ToLower() } };
-            return Delete<dynamic>(apiEndpoint, parameters).message;
+            return (await Delete<dynamic>(apiEndpoint, parameters)).message;
         }
 
-        // View Products Count
-        public int Count(Dictionary<string, string> parameters = null)
+        /// <summary>
+        /// View Products Count 
+        /// </summary>
+        /// <param name="parameters">parameter filter constraint</param>
+        /// <returns></returns>
+        public async Task<int> Count(Dictionary<string, string> parameters = null)
         {
-            return Get<dynamic>(apiEndpoint: "products/count", parameters: parameters).count;
+            return (await Get<dynamic>("products/count", parameters)).count;
         }
     }
 }
