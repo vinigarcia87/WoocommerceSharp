@@ -5,39 +5,70 @@ namespace SharpCommerce.Services
     using System;
     using SharpCommerce.Data.Orders;
     using SharpCommerce.Web;
+    using System.Threading.Tasks;
 
     public class OrderRefundsService : Service
     {
         public OrderRefundsService(WoocommerceApiDriver apiDriver) : base(apiDriver) { }
 
-        // Create A Refund For An Order
-        public OrderRefund Create(int orderId, OrderRefund newData)
+        /// <summary>
+        /// Create A Refund For An Order
+        /// </summary>
+        /// <param name="orderId">The identifier of Order</param>
+        /// <param name="newData">Order Refund object to be created</param>
+        /// <returns></returns>
+        public async Task<OrderRefund> Create(int orderId, OrderRefund newData)
         {
-            return Post(apiEndpoint: String.Format("orders/{0}/refunds", orderId), toSerialize: new OrderRefundBundle() { Content = newData }).Content;
+            return (await Post(apiEndpoint: String.Format("orders/{0}/refunds", orderId), toSerialize: new OrderRefundBundle() { Content = newData })).Content;
         }
 
-        // View An Order Note
-        public OrderRefund Get(int orderId, int refundId)
+        /// <summary>
+        /// View An Order Note
+        /// </summary>
+        /// <param name="orderId">The identifier of Order</param>
+        /// <param name="refundId">The identifier of Refund</param>
+        /// <returns></returns>
+        public async Task<OrderRefund> Get(int orderId, int refundId)
         {
-            return Get<OrderRefundBundle>(apiEndpoint: String.Format("orders/{0}/refunds/{1}", orderId, refundId)).Content;
+            var endPoint = string.Format("orders/{0}/refunds/{1}", orderId, refundId);
+            return (await Get<OrderRefundBundle>(endPoint)).Content;
         }
 
-        // View List of Refunds From An Order
-        public IEnumerable<OrderRefund> Get(int orderId)
+        /// <summary>
+        /// View List of Refunds From An Order
+        /// </summary>
+        /// <param name="orderId">The identifier of Order</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<OrderRefund>> Get(int orderId)
         {
-            return this.Get<OrderRefundsBundle>(apiEndpoint: String.Format("orders/{0}/refunds", orderId)).Content;
+            var endPoint = string.Format("orders/{0}/refunds", orderId);
+            return (await Get<OrderRefundsBundle>(endPoint)).Content;
         }
 
-        // Update An Order Refund
-        public OrderRefund Update(int orderId, int refundId, OrderRefund newData)
+        /// <summary>
+        /// Update An Order Refund
+        /// </summary>
+        /// <param name="orderId">The identifier of Order Refund</param>
+        /// <param name="refundId">The identifier of Refund</param>
+        /// <param name="newData">Order Refund object to be updated</param>
+        /// <returns></returns>
+        public async Task<OrderRefund> Update(int orderId, int refundId, OrderRefund newData)
         {
-            return Put(apiEndpoint: String.Format("orders/{0}/refunds/{1}", orderId, refundId), toSerialize: new OrderRefundBundle { Content = newData }).Content;
+            var endPoint = string.Format("orders/{0}/refunds/{1}", orderId, refundId);
+            var bundle = new OrderRefundBundle { Content = newData };
+            return (await Put(endPoint, toSerialize: bundle)).Content;
         }
 
-        // Delete An Order Refund
-        public string Delete(int orderId, int refundId)
+        /// <summary>
+        /// Delete An Order Refund
+        /// </summary>
+        /// <param name="orderId">The identifier of Order</param>
+        /// <param name="refundId">The identifier of Refund</param>
+        /// <returns></returns>
+        public async Task<string> Delete(int orderId, int refundId)
         {
-            return Delete<dynamic>(apiEndpoint: String.Format("orders/{0}/refunds/{1}", orderId, refundId)).message;
+            var endPoint = String.Format("orders/{0}/refunds/{1}", orderId, refundId);
+            return (await Delete<dynamic>(endPoint)).message;
         }
     }
 }
