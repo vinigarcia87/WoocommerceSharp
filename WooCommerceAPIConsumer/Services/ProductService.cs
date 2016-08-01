@@ -9,18 +9,16 @@ namespace SharpCommerce.Services
 
     public class ProductService : Service
     {
+        private const string BaseApiEndpoint = "products";
+
         public readonly ProductAttributeService Attributes;
         public readonly ProductCategoryService Categories;
-        public readonly ProductOrderService Orders;
-        public readonly ProductReviewService Reviews;
 
         public ProductService(WoocommerceApiDriver apiDriver)
             : base(apiDriver)
         {
             Attributes = new ProductAttributeService(apiDriver);
             Categories = new ProductCategoryService(apiDriver);
-            Orders = new ProductOrderService(apiDriver);
-            Reviews = new ProductReviewService(apiDriver);
         }
 
         /// <summary>
@@ -30,8 +28,8 @@ namespace SharpCommerce.Services
         /// <returns>Created product object</returns>
         public async Task<Product> Create(Product productData)
         {
-            var bundle = new ProductBundle { Content = productData };
-            return (await Post(apiEndpoint: "products", toSerialize: bundle)).Content;
+            var endPoint = String.Format("{0}", BaseApiEndpoint);
+            return (await Post(apiEndpoint: endPoint, toSerialize: productData));
         }
 
 
@@ -42,8 +40,19 @@ namespace SharpCommerce.Services
         /// <returns>A product object</returns>
         public async Task<Product> Get(int productId)
         {
-            var endPoint = string.Format("products/{0}", productId);
-            return (await Get<ProductBundle>(endPoint)).Content;
+            var endPoint = string.Format("{0}/{1}", BaseApiEndpoint, productId);
+            return (await Get<Product>(endPoint));
+        }
+
+        /// <summary>
+        /// View a Product Review
+        /// </summary>
+        /// <param name="productId">The identifier of product</param>
+        /// <returns>A product object</returns>
+        public async Task<IEnumerable<ProductReview>> GetProductReviews(int productId)
+        {
+            var endPoint = string.Format("{0}/{1}/reviews", BaseApiEndpoint, productId);
+            return (await Get<IEnumerable<ProductReview>>(endPoint));
         }
 
         /// <summary>
@@ -53,7 +62,8 @@ namespace SharpCommerce.Services
         /// <returns>List of Products Object</returns>
         public async Task<IEnumerable<Product>> Get(Dictionary<string, string> parameters = null)
         {
-            return (await Get<ProductsBundle>("products", parameters)).Content;
+            var endPoint = String.Format("{0}", BaseApiEndpoint);
+            return (await Get<IEnumerable<Product>>(endPoint, parameters));
         }
 
         /// <summary>
@@ -64,9 +74,8 @@ namespace SharpCommerce.Services
         /// <returns></returns>
         public async Task<Product> Update(int productId, Product newData)
         {
-            var endPoint = String.Format("products/{0}", productId);
-            var bundle = new ProductBundle { Content = newData };
-            return (await Put(endPoint, toSerialize: bundle)).Content;
+            var endPoint = String.Format("{0}/{1}", BaseApiEndpoint, productId);
+            return (await Put(endPoint, toSerialize: newData));
         }
 
         /// <summary>
@@ -76,8 +85,8 @@ namespace SharpCommerce.Services
         /// <returns>Updated product object</returns>
         public async Task<IEnumerable<Product>> CreateUpdateMany(IEnumerable<Product> ordersData)
         {
-            var bundle = new ProductsBundle { Content = ordersData };
-            return (await Put("products/bulk", toSerialize: bundle)).Content;
+            var endPoint = String.Format("{0}/bulk", BaseApiEndpoint);
+            return (await Put(endPoint, toSerialize: ordersData));
         }
 
         /// <summary>
@@ -102,7 +111,7 @@ namespace SharpCommerce.Services
 
         private async Task<string> Delete(int id, bool force = false)
         {
-            var apiEndpoint = String.Format("products/{0}", id);
+            var apiEndpoint = String.Format("{0}/{1}", BaseApiEndpoint, id);
             var parameters = new Dictionary<string, string> { { "force", force.ToString().ToLower() } };
             return (await Delete<dynamic>(apiEndpoint, parameters)).message;
         }
@@ -114,7 +123,8 @@ namespace SharpCommerce.Services
         /// <returns></returns>
         public async Task<int> Count(Dictionary<string, string> parameters = null)
         {
-            return (await Get<dynamic>("products/count", parameters)).count;
+            var endPoint = String.Format("{0}/count", BaseApiEndpoint);
+            return (await Get<dynamic>(endPoint, parameters)).count;
         }
     }
 }

@@ -21,8 +21,7 @@ namespace SharpCommerce.Services
         /// <returns>Newly created product attribute object</returns>
         public async Task<ProductAttribute> Create(ProductAttribute productAttributeData)
         {
-            var bundle = new ProductAttributeBundle { Content = productAttributeData };
-            return (await Post(apiEndpoint: BaseApiEndpoint, toSerialize: bundle)).Content;
+            return (await Post(apiEndpoint: BaseApiEndpoint, toSerialize: productAttributeData));
         }
 
         /// <summary>
@@ -33,7 +32,7 @@ namespace SharpCommerce.Services
         public async Task<ProductAttribute> Get(int productAttributeId)
         {
             var endPoint = String.Format("{0}/{1}", BaseApiEndpoint, productAttributeId);
-            return (await Get<ProductAttributeBundle>(endPoint)).Content;
+            return (await Get<ProductAttribute>(endPoint));
         }
 
         /// <summary>
@@ -43,7 +42,7 @@ namespace SharpCommerce.Services
         /// <returns>List of product attributes object</returns>
         public async Task<IEnumerable<ProductAttribute>> Get(Dictionary<string, string> parameters = null)
         {
-            return (await Get<ProductAttributesBundle>(apiEndpoint: BaseApiEndpoint, parameters: parameters)).Content;
+            return (await Get<IEnumerable<ProductAttribute>>(apiEndpoint: BaseApiEndpoint, parameters: parameters));
         }
 
         /// <summary>
@@ -55,8 +54,7 @@ namespace SharpCommerce.Services
         public async Task<ProductAttribute> Update(int productAttributeId, ProductAttribute newData)
         {
             var endPoint = String.Format("{0}/{1}", BaseApiEndpoint, productAttributeId);
-            var bundle = new ProductAttributeBundle { Content = newData };
-            return (await Put(endPoint, toSerialize: bundle)).Content;
+            return (await Put(endPoint, toSerialize: newData));
         }
 
         /// <summary>

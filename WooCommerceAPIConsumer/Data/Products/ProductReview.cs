@@ -11,39 +11,39 @@ namespace SharpCommerce.Data.Products
     public class ProductReview
     {
         /// <summary>
-        /// Review ID (comment ID) read-only
+        /// Unique identifier for the resource [read-only]
         /// </summary>
-        [JsonProperty("id")]
         public int Id { get; set; }
 
         /// <summary>
-        /// UTC DateTime when the review was created read-only
+        /// The date the review was created, in the site’s timezone [read-only]
         /// </summary>
-        [JsonProperty("created_at")]
-        public DateTime CreatedAt { get; set; }
+        [JsonProperty("date_created")]
+        public string DateCreated { get; set; }
 
         /// <summary>
-        /// Review rating (0 to 5) read-only
+        /// Review rating (0 to 5) [read-only]
         /// </summary>
         [JsonProperty("rating")]
         public int Rating { get; set; }
 
         /// <summary>
-        /// Reviewer name read-only
+        /// Reviewer name [read-only]
         /// </summary>
-        [JsonProperty("reviewer_name")]
-        public string ReviewerName { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
         /// <summary>
-        /// Reviewer email read-only
+        /// Reviewer email
         /// </summary>
-        [JsonProperty("reviewer_email")]
-        public string ReviewerEmail { get; set; }
+        [JsonProperty("email")]
+        public string Email { get; set; }
 
         /// <summary>
         /// Shows if the reviewer bought the product or not
         /// </summary>
         [JsonProperty("verified")]
         public bool Verified { get; set; }
+
     }
 }

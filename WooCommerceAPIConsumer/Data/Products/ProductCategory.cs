@@ -4,59 +4,57 @@
 
     public class ProductCategory
     {
-        //private readonly int id;
-        //private readonly string name;
-        //private readonly string slug;
-        //private readonly int parent;
-        //private readonly string description;
-        //private readonly string display;
-        //private readonly string image;
-        //private readonly bool showCount;
 
         /// <summary>
-        /// Category ID (term ID) read-only
+        /// Category ID (term ID) [read-only]
         /// </summary>
         [JsonProperty("id")]
         public int Id { get; set; }
 
         /// <summary>
-        /// Category name read-only
+        /// Category name [read-only]
         /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
 
         /// <summary>
-        /// Category slug read-only
+        /// Category slug
         /// </summary>
         [JsonProperty("slug")]
         public string Slug { get; set; }
 
         /// <summary>
-        /// Category parent read-only
+        /// Category parent [read-only]
         /// </summary>
         [JsonProperty("parent")]
         public int Parent { get; set; }
 
         /// <summary>
-        /// Category description read-only
+        /// Category description
         /// </summary>
         [JsonProperty("description")]
         public string Descripton { get; set; }
 
         /// <summary>
-        /// Category archive display type, the types available include: default, products, subcategories and both read-only
+        /// Category archive display type. Default is default. Options: default, products, subcategories and both
         /// </summary>
         [JsonProperty("display")]
         public string Display { get; set; }
 
         /// <summary>
-        /// Category image URL read-only
+        /// Category Image data
         /// </summary>
         [JsonProperty("image")]
-        public string Image { get; set; }
+        public Image Image { get; set; }
 
         /// <summary>
-        /// Shows the quantity of products in this category 
+        /// Menu order, used to custom sort the resource 
+        /// </summary>
+        [JsonProperty("menu_order")]
+        public int MenuOrder { get; set; }
+
+        /// <summary>
+        /// Number of published products for the resource [read-only]
         /// </summary>
         [JsonProperty("count")]
         public int Count { get; set; }

@@ -21,7 +21,7 @@ namespace SharpCommerce.Services
         public async Task<ProductCategory> Get(int productCategoryId)
         {
             var endPoint = String.Format("{0}/{1}", BaseApiEndpoint, productCategoryId);
-            return (await Get<ProductCategoryBundle>(endPoint)).Content;
+            return (await Get<ProductCategory>(endPoint));
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace SharpCommerce.Services
         /// <returns>List of product categories</returns>
         public async Task<IEnumerable<ProductCategory>> Get(Dictionary<string, string> parameters = null)
         {
-            return (await Get<ProductCategoriesBundle>(BaseApiEndpoint, parameters)).Content;
+            return (await Get<IEnumerable<ProductCategory>>(BaseApiEndpoint, parameters));
         }
 
 

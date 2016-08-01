@@ -10,43 +10,43 @@ namespace SharpCommerce.Data.Products
     public class Image
     {
         /// <summary>
-        /// Image ID (attachment ID)
+        /// Image ID (attachment ID). In write-mode used to attach pre-existing images
         /// </summary>
         [JsonProperty("id")]
         public int Id { get; set; }
 
         /// <summary>
-        /// UTC DateTime when the image was created. [read-only]
+        /// The date the image was created, in the site’s timezone [read-only]
         /// </summary>
-        [JsonProperty("created_at")]
-        public DateTime CreatedAt { get; set; }
+        [JsonProperty("date_created")]
+        public DateTime DateCreated { get; set; }
 
         /// <summary>
-        /// UTC DateTime when the image was last updated. [read-only]
+        /// The date the image was last modified, in the site’s timezone [read-only]
         /// </summary>
-        [JsonProperty("updated_at")]
-        public DateTime UpdatedAt { get; set; }
+        [JsonProperty("date_modified")]
+        public DateTime DateModified { get; set; }
 
         /// <summary>
-        /// Image URL. In write-mode you can use to send new images.
+        /// Image URL. In write-mode you can use to send new images
         /// </summary>
         [JsonProperty("src")]
         public string Src { get; set; }
 
         /// <summary>
-        /// Image title (attachment title). [read-only]
+        /// Image name (attachment title) [read-only]
         /// </summary>
-        [JsonProperty("title")]
-        public string Title { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
         /// <summary>
-        /// Image alt text (attachment image alt text). [read-only]
+        /// Image alternative text (attachment image alt text) [read-only]
         /// </summary>
         [JsonProperty("alt")]
         public string Alt { get; set; }
 
         /// <summary>
-        /// Image position. 0 means that the image is featured.
+        /// Image position. 0 means that the image is featured
         /// </summary>
         [JsonProperty("position")]
         public int Position { get; set; }

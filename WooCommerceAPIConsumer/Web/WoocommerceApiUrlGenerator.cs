@@ -12,26 +12,28 @@
     internal class WoocommerceApiUrlGenerator
     {
         private const string SignatureMethod = "HMAC-SHA1";
-        private const string ApiV3RootEndpoint = "wc-api/v3/";
+        private readonly string ApiRootEndpoint; // "wp-json/wc/v1/"; // "wc-api/v3/"; // "wp-json/wc-dexpecas/v1/";
         private readonly string baseURI;
         private readonly string consumerKey;
         private readonly string consumerSecret;
 
-        internal WoocommerceApiUrlGenerator(string storeUrl, string consumerKey, string consumerSecret)
+        internal WoocommerceApiUrlGenerator(string storeUrl, string consumerKey, string consumerSecret, string apiRootEndPoint)
         {
             if (
                 string.IsNullOrEmpty(consumerKey) ||
                 string.IsNullOrEmpty(consumerSecret) ||
-                string.IsNullOrEmpty(storeUrl))
+                string.IsNullOrEmpty(storeUrl) ||
+                string.IsNullOrEmpty(apiRootEndPoint))
             {
-                throw new ArgumentException("ConsumerKey, consumerSecret and storeUrl are required");
+                throw new ArgumentException("ConsumerKey, consumerSecret, storeUrl and apiRootEndPoint are required");
             }
 
             this.consumerKey = consumerKey;
             this.consumerSecret = consumerSecret;
+            this.ApiRootEndpoint = apiRootEndPoint;
 
-            // Need 'http://www.example.com' to be 'http://www.example.com/wc-api/v3/'
-            this.baseURI = String.Format("{0}/{1}", storeUrl.TrimEnd('/'), ApiV3RootEndpoint);
+            // Need 'http://www.example.com' to be 'http://www.example.com/wp-json/wc/v1/'
+            this.baseURI = String.Format("{0}/{1}", storeUrl.TrimEnd('/'), ApiRootEndpoint);
         }
 
         internal string GenerateRequestUrl(HttpMethod httpMethod, string apiEndpoint, Dictionary<string, string> parameters = null)
@@ -84,7 +86,7 @@
 
 
             //2) Set your base request URI – this is the full request URI without query string parameters – and URL encode according to RFC 3986:
-            // need 'http://www.example.com/wc-api/v3/orders'
+            // need 'http://www.example.com/wp-json/wc/v1/orders'
             // to become: 'http%3A%2F%2Fwww.example.com%2Fwc-api%2Fv1%2Forders'
             var encodedBaseRequestURI = SafeUpperCaseUrlEncode(this.baseURI + apiEndpoint);
 

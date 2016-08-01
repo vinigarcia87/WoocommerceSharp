@@ -10,6 +10,7 @@ namespace SharpCommerce.Data.Products
 
     public class Dimensions
     {
+
         /// <summary>
         /// Product length in decimal format
         /// </summary>
@@ -28,10 +29,5 @@ namespace SharpCommerce.Data.Products
         [JsonProperty("height")]
         public float? Height { get; set; }
 
-        /// <summary>
-        /// Product name [read-only]
-        /// </summary>
-        [JsonProperty("unit")]
-        public string Unit { get; set; }
     }
 }

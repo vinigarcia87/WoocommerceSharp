@@ -20,8 +20,7 @@ namespace SharpCommerce.Services
         public async Task<OrderNote> Create(int orderId, OrderNote newData)
         {
             var endPoint = String.Format("orders/{0}/notes", orderId);
-            var bundle = new OrderNoteBundle { Content = newData };
-            return (await Post(endPoint, toSerialize: bundle)).Content;
+            return (await Post(endPoint, toSerialize: newData));
         }
 
         /// <summary>
@@ -33,7 +32,7 @@ namespace SharpCommerce.Services
         public async Task<OrderNote> Get(int orderId, int noteId)
         {
             var endPoint = String.Format("orders/{0}/notes/{1}", orderId, noteId);
-            return (await Get<OrderNoteBundle>(endPoint)).Content;
+            return (await Get<OrderNote>(endPoint));
         }
 
         /// <summary>
@@ -44,7 +43,7 @@ namespace SharpCommerce.Services
         public async Task<IEnumerable<OrderNote>> Get(int orderId)
         {
             var endPoint = String.Format("orders/{0}/notes", orderId);
-            return (await Get<OrderNotesBundle>(endPoint)).Content;
+            return (await Get<IEnumerable<OrderNote>>(endPoint));
         }
 
         /// <summary>
@@ -57,8 +56,7 @@ namespace SharpCommerce.Services
         public async Task<OrderNote> Update(int orderId, int noteId, OrderNote newData)
         {
             var endPoint = String.Format("orders/{0}/notes/{1}", orderId, noteId);
-            var bundle = new OrderNoteBundle { Content = newData };
-            return (await Put(endPoint, toSerialize: bundle)).Content;
+            return (await Put(endPoint, toSerialize: newData));
         }
 
         /// <summary>

@@ -11,36 +11,36 @@ namespace SharpCommerce.Data.Products
     public class ProductAttribute
     {
         /// <summary>
-        /// Attribute ID
+        /// Attribute ID [read-only]
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
-        /// Attribute name
+        /// Attribute name [required]
         /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
 
         /// <summary>
-        /// Attribute slug
+        /// An alphanumeric identifier for the resource unique to its type
         /// </summary>
         [JsonProperty("slug")]
         public string Slug { get; set; }
 
         /// <summary>
-        /// Attribute type, the types available include by default are: select and text (some plugins can include new types)
+        /// Type of attribute. Default is select. Options: select and text (some plugins can include new types)
         /// </summary>
         [JsonProperty("type")]
-        public int Type { get; set; }
+        public string Type { get; set; }
 
         /// <summary>
-        /// Default sort order. Available: menu_order, name, name_num and id        
+        /// Default sort order. Default is menu_order. Options: menu_order, name, name_num and id
         /// </summary>
         [JsonProperty("order_by")]
-        public bool OrderBy { get; set; }
+        public string OrderBy { get; set; }
 
         /// <summary>
-        /// Enable/Disable attribute archives
+        /// Enable/Disable attribute archives. Default is false
         /// </summary>
         [JsonProperty("has_archives")]
         public bool HasArchives { get; set; }

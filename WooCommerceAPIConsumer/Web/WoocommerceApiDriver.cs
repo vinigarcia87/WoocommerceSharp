@@ -11,9 +11,9 @@
     {
         private readonly WoocommerceApiUrlGenerator urlGenerator;
 
-        internal WoocommerceApiDriver(string storeUrl, string consumerKey, string consumerSecret)
+        internal WoocommerceApiDriver(string storeUrl, string consumerKey, string consumerSecret, string apiRootEndPoint)
         {
-            this.urlGenerator = new WoocommerceApiUrlGenerator(storeUrl, consumerKey, consumerSecret);
+            this.urlGenerator = new WoocommerceApiUrlGenerator(storeUrl, consumerKey, consumerSecret, apiRootEndPoint);
         }
 
         internal async Task<string> Delete(string apiEndpoint, Dictionary<string, string> parameters = null, string jsonData = null)

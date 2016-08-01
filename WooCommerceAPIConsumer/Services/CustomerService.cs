@@ -11,6 +11,8 @@ namespace SharpCommerce.Services
 
     public class CustomerService : Service
     {
+        private const string BaseApiEndpoint = "customers";
+
         public CustomerService(WoocommerceApiDriver apiDriver)
             : base(apiDriver) { }
 
@@ -21,8 +23,7 @@ namespace SharpCommerce.Services
         /// <returns></returns>
         public async Task<Customer> Create(Customer orderData)
         {
-            var bundle = new CustomerBundle { Content = orderData };
-            return (await Post(apiEndpoint: "customers", toSerialize: bundle)).Content;
+            return (await Post(apiEndpoint: BaseApiEndpoint, toSerialize: orderData));
         }
 
         /// <summary>
@@ -32,19 +33,8 @@ namespace SharpCommerce.Services
         /// <returns></returns>
         public async Task<Customer> Get(int customerId)
         {
-            var endPoint = string.Format("customers/{0}", customerId);
-            return (await Get<CustomerBundle>(endPoint)).Content;
-        }
-
-        /// <summary>
-        /// View a Customer by Email
-        /// </summary>
-        /// <param name="email">Email of customer</param>
-        /// <returns></returns>
-        public async Task<Customer> Get(string email)
-        {
-            var endPoint = string.Format("customers/email/{0}", email);
-            return (await Get<CustomerBundle>(endPoint)).Content;
+            var endPoint = string.Format("{0}/{1}", BaseApiEndpoint, customerId);
+            return (await Get<Customer>(endPoint));
         }
 
         /// <summary>
@@ -54,7 +44,7 @@ namespace SharpCommerce.Services
         /// <returns></returns>
         public async Task<IEnumerable<Customer>> Get(Dictionary<string, string> parameters = null)
         {
-            return (await Get<CustomersBundle>(apiEndpoint: "customers", parameters: parameters)).Content;
+            return (await Get<IEnumerable<Customer>>(apiEndpoint: BaseApiEndpoint, parameters: parameters));
         }
 
         /// <summary>
@@ -65,9 +55,8 @@ namespace SharpCommerce.Services
         /// <returns></returns>
         public async Task<Customer> Update(int customerId, Customer newData)
         {
-            var endPoint = String.Format("customers/{0}", customerId);
-            var bundle = new CustomerBundle { Content = newData };
-            return (await Put(endPoint, toSerialize: bundle)).Content;
+            var endPoint = String.Format("{0}/{1}", BaseApiEndpoint, customerId);
+            return (await Put(endPoint, toSerialize: newData));
         }
 
         /// <summary>
@@ -77,8 +66,8 @@ namespace SharpCommerce.Services
         /// <returns></returns>
         public async Task<IEnumerable<Customer>> CreateUpdateMany(IEnumerable<Customer> ordersData)
         {
-            var bundle = new CustomersBundle { Content = ordersData };
-            return (await Put(apiEndpoint: "customers/bulk", toSerialize: bundle)).Content;
+            var endPoint = String.Format("{0}/bulk", BaseApiEndpoint);
+            return (await Put(apiEndpoint: endPoint, toSerialize: ordersData));
         }
 
         /// <summary>
@@ -88,7 +77,7 @@ namespace SharpCommerce.Services
         /// <returns></returns>
         public async Task<string> DeletePermanently(int id)
         {
-            var endPoint = string.Format("customers/{0}", id);
+            var endPoint = string.Format("{0}/{1}", BaseApiEndpoint, id);
             return (await Delete<dynamic>(endPoint)).message;
         }
 
@@ -100,19 +89,8 @@ namespace SharpCommerce.Services
         /// <returns></returns>
         public async Task<int> Count(Dictionary<string, string> parameters = null)
         {
-            return (await Get<dynamic>(apiEndpoint: "customers/count", parameters: parameters)).count;
-        }
-
-        /// <summary>
-        /// View Customer's Order
-        /// </summary>
-        /// <param name="customerId">The identifier of customer</param>
-        /// <param name="parameters">Parameter to filter list of orders</param>
-        /// <returns></returns>
-        public async Task<IEnumerable<Order>> GetOrders(int customerId, Dictionary<string, string> parameters = null)
-        {
-            var endPoint = String.Format("customers/{0}/orders", customerId);
-            return (await Get<OrdersBundle>(endPoint, parameters: parameters)).Content;
+            var endPoint = string.Format("{0}/count", BaseApiEndpoint);
+            return (await Get<dynamic>(apiEndpoint: endPoint, parameters: parameters)).count;
         }
 
         /// <summary>
@@ -123,8 +101,8 @@ namespace SharpCommerce.Services
         /// <returns></returns>
         public async Task<IEnumerable<Download>> GetDownloads(int customerId, Dictionary<string, string> parameters = null)
         {
-            var endPoint = String.Format("customers/{0}/downloads", customerId);
-            return (await Get<DownloadsBundle>(endPoint, parameters: parameters)).Content;
+            var endPoint = String.Format("{0}/{1}/downloads", BaseApiEndpoint, customerId);
+            return (await Get<IEnumerable<Download>>(endPoint, parameters: parameters));
         }
     }
 }

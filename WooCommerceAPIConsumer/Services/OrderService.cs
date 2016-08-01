@@ -9,14 +9,14 @@ namespace SharpCommerce.Services
 
     public class OrderService : Service
     {
+        private const string BaseApiEndpoint = "orders";
+
         public readonly OrderNotesService Notes;
-        public readonly OrderRefundsService Refunds;
 
         public OrderService(WoocommerceApiDriver apiDriver)
             : base(apiDriver)
         {
             Notes   = new OrderNotesService(apiDriver);
-            Refunds = new OrderRefundsService(apiDriver);
         }
 
         /// <summary>
@@ -26,8 +26,7 @@ namespace SharpCommerce.Services
         /// <returns></returns>
         public async Task<Order> Create(Order orderData)
         {
-            var bundle = new OrderBundle { Content = orderData };
-            return (await Post(apiEndpoint: "orders", toSerialize: bundle)).Content;
+            return (await Post(apiEndpoint: BaseApiEndpoint, toSerialize: orderData));
         }
 
         /// <summary>
@@ -37,8 +36,8 @@ namespace SharpCommerce.Services
         /// <returns>Order object</returns>
         public async Task<Order> Get(int orderId)
         {
-            var endPoint = string.Format("orders/{0}", orderId);
-            return (await Get<OrderBundle>(endPoint)).Content;
+            var endPoint = string.Format("{0}/{1}", BaseApiEndpoint, orderId);
+            return (await Get<Order>(endPoint));
         }
 
         /// <summary>
@@ -48,7 +47,7 @@ namespace SharpCommerce.Services
         /// <returns>List of Orders</returns>
         public async Task<IEnumerable<Order>> Get(Dictionary<string, string> parameters = null)
         {
-            return (await Get<OrdersBundle>(apiEndpoint: "orders", parameters: parameters)).Content;
+            return (await Get<IEnumerable<Order>>(apiEndpoint: BaseApiEndpoint, parameters: parameters));
         }
         
         /// <summary>
@@ -58,8 +57,8 @@ namespace SharpCommerce.Services
         /// <returns></returns>
         public async Task<IEnumerable<Order>> CreateUpdateMany(IEnumerable<Order> ordersData)
         {
-            var bundle = new OrdersBundle { Content = ordersData };
-            return (await Put(apiEndpoint: "orders/bulk", toSerialize: bundle)).Content;
+            var endPoint = string.Format("{0}/bulk", BaseApiEndpoint);
+            return (await Put(apiEndpoint: endPoint, toSerialize: ordersData));
         }
 
         /// <summary>
@@ -70,9 +69,8 @@ namespace SharpCommerce.Services
         /// <returns>New Order Object</returns>
         public async Task<Order> Update(int orderId, Order newData)
         {
-            var endPoint = String.Format("orders/{0}", orderId);
-            var bundle = new OrderBundle { Content = newData };
-            return (await Put(endPoint, toSerialize: bundle)).Content;
+            var endPoint = String.Format("{0}/{1}", BaseApiEndpoint, orderId);
+            return (await Put(endPoint, toSerialize: newData));
         }
 
         /// <summary>
@@ -102,21 +100,13 @@ namespace SharpCommerce.Services
         /// <returns>Number of order's count</returns>
         public async Task<int> Count(Dictionary<string, string> parameters = null)
         {
-            return (await Get<dynamic>("orders/count", parameters)).count; 
+            var endPoint = string.Format("{0}/count", BaseApiEndpoint);
+            return (await Get<dynamic>(endPoint, parameters)).count; 
         }
 
-        /// <summary>
-        /// View List of Order Statuses
-        /// </summary>
-        /// <returns></returns>
-        public async Task<OrderStatuses> GetStatuses()
-        {
-            return (await Get<OrderStatusesBundle>("orders/statuses")).Content;
-        }
-        
         private async Task<string> Delete(int id, bool force = false)
         {
-            var apiEndpoint = String.Format("orders/{0}", id);
+            var apiEndpoint = String.Format("{0}/{1}", BaseApiEndpoint, id);
             var parameters = new Dictionary<string, string> { { "force", force.ToString().ToLower() } };
             return (await Delete<dynamic>(apiEndpoint, parameters)).message;
         }

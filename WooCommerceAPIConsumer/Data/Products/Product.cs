@@ -18,12 +18,10 @@ namespace SharpCommerce.Data.Products
         // Default values for some.
         private string type = "simple";
         private string status = "publish";
-
-        /// <summary>
-        /// Product name
-        /// </summary>
-        [JsonProperty("title")]
-        public string Title { get; set; }
+        private string catalogvisibility = "visible";
+        private string downloadtype = "";
+        private string taxstatus;
+        private string backorders;
 
         /// <summary>
         /// Product ID (post ID) [read-only]
@@ -32,19 +30,37 @@ namespace SharpCommerce.Data.Products
         public int Id { get; set; }
 
         /// <summary>
-        /// UTC DateTime when the product was created [read-only]
+        /// Product name
         /// </summary>
-        [JsonProperty("created_at")]
-        public DateTime CreatedAt { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
         /// <summary>
-        /// UTC DateTime when the product was last updated [read-only]
+        /// Product slug
         /// </summary>
-        [JsonProperty("updated_at")]
-        public DateTime UpdatedAt { get; set; }
+        [JsonProperty("slug")]
+        public string Slug { get; set; }
 
         /// <summary>
-        /// Product type. By default in WooCommerce the following types are available: simple, grouped, external, variable. Default is simple.
+        /// Product URL (post permalink) [read-only]
+        /// </summary>
+        [JsonProperty("permalink")]
+        public string Permalink { get; set; }
+
+        /// <summary>
+        /// The date the product was created, in the site’s timezone [read-only]
+        /// </summary>
+        [JsonProperty("date_created")]
+        public DateTime DateCreated { get; set; }
+
+        /// <summary>
+        /// The date the product was last modified, in the site’s timezone [read-only]
+        /// </summary>
+        [JsonProperty("date_modified")]
+        public DateTime DateModified { get; set; }
+
+        /// <summary>
+        /// Product type. Default is simple. Options: simple, grouped, external, variable
         /// </summary>
         [JsonProperty("type")]
         public string Type
@@ -81,7 +97,7 @@ namespace SharpCommerce.Data.Products
         }
 
         /// <summary>
-        /// Product status (post status). Default is 'publish'
+        /// Product status (post status). Default is publish. Options: draft, pending, private and publish
         /// </summary>
         [JsonProperty("status")]
         public string Status
@@ -92,33 +108,87 @@ namespace SharpCommerce.Data.Products
             }
             set
             {
-                // TODO
-                // need to switch again valid post statuses.
-                // need to look those up
-                this.status = value;
+                switch (value)
+                {
+                    case "draft":
+                        this.type = value;
+                        return;
+
+                    case "pending":
+                        this.type = value;
+                        return;
+
+                    case "private":
+                        this.type = value;
+                        return;
+
+                    case "publish":
+                        this.type = value;
+                        return;
+
+                    default:
+                        throw new ArgumentException(
+                            "Invalid product status. Choices are 'draft', 'pending', 'private', 'publish'");
+                }
             }
         }
 
         /// <summary>
-        /// If the product is downloadable or not. Downloadable products give access to a file upon purchase
+        /// Featured product. Default is false
         /// </summary>
-        [JsonProperty("downloadable")]
-        public bool Downloadable { get; set; }
+        [JsonProperty("featured")]
+        public bool Featured { get; set; }
+        
+        /// <summary>
+        /// Catalog visibility. Default is visible. Options: visible (Catalog and search), catalog (Only in catalog), search (Only in search) and hidden (Hidden from all)
+        /// </summary>
+        [JsonProperty("catalog_visibility")]
+        public string CatalogVisibility
+        {
+            get
+            {
+                return this.catalogvisibility;
+            }
+            set
+            {
+                switch (value)
+                {
+                    case "visible":
+                        this.catalogvisibility = value;
+                        return;
+
+                    case "catalog":
+                        this.catalogvisibility = value;
+                        return;
+
+                    case "search":
+                        this.catalogvisibility = value;
+                        return;
+
+                    case "hidden":
+                        this.catalogvisibility = value;
+                        return;
+
+                    default:
+                        throw new ArgumentException("Invalid catalog visibility value. Choices are 'visible', 'catalog', 'search', 'hidden'");
+                }
+            }
+        }
 
         /// <summary>
-        /// If the product is virtual or not. Virtual products are intangible and aren’t shipped
+        /// Product description
         /// </summary>
-        [JsonProperty("virtual")]
-        public bool Virtual { get; set; }
+        [JsonProperty("description")]
+        public string Description { get; set; }
 
         /// <summary>
-        /// Product URL (post permalink) [read-only]
+        /// Product short description
         /// </summary>
-        [JsonProperty("permalink")]
-        public string Permalink { get; set; }
+        [JsonProperty("short_description")]
+        public string ShortDescription { get; set; }
 
         /// <summary>
-        /// SKU refers to a Stock-keeping unit, a unique identifier for each distinct product and service that can be purchased
+        /// Unique identifier - SKU refers to a Stock-keeping unit, a unique identifier for each distinct product and service that can be purchased
         /// </summary>
         [JsonProperty("sku")]
         public string Sku { get; set; }
@@ -142,21 +212,119 @@ namespace SharpCommerce.Data.Products
         public float? SalePrice { get; set; }
 
         /// <summary>
-        /// Sets the sale start date. Date in the YYYY-MM-DD format. [write-only]
+        /// Start date of sale price. Date in the YYYY-MM-DD format
         /// </summary>
-        [JsonProperty("sale_price_dates_from")]
-        public DateTime SalePriceDatesFrom { get; set; }
+        [JsonProperty("date_on_sale_from")]
+        public DateTime? SalePriceDatesFrom { get; set; }
 
-        [JsonProperty("sale_price_dates_to")]
-        public DateTime SalePriceDatesTo { get; set; }
+        /// <summary>
+        /// Sets the sale end date. Date in the YYYY-MM-DD format
+        /// </summary>
+        [JsonProperty("date_on_sale_to")]
+        public DateTime? SalePriceDatesTo { get; set; }
 
+        /// <summary>
+        /// Price formatted in HTML, e.g. <del><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;&nbsp;3.00</span></span></del> <ins><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;&nbsp;2.00</span></span></ins> [read-only]
+        /// </summary>
         [JsonProperty("price_html")]
         public string PriceHtml { get; set; }
 
-        [JsonProperty("taxable")]
-        public bool Taxable { get; set; }
+        /// <summary>
+        /// Shows if the product is on sale [read-only]
+        /// </summary>
+        [JsonProperty("on_sale")]
+        public bool OnSale { get; set; }
 
-        private string taxstatus;
+        /// <summary>
+        /// Shows if the product can be bought [read-only]
+        /// </summary>
+        [JsonProperty("purchasable")]
+        public bool Purchasable { get; set; }
+
+        /// <summary>
+        /// Amount of sales [read-only]
+        /// </summary>
+        [JsonProperty("total_sales")]
+        public int AmountOfSales { get; set; }
+
+        /// <summary>
+        /// If the product is virtual. Virtual products are intangible and aren’t shipped. Default is false
+        /// </summary>
+        [JsonProperty("virtual")]
+        public bool Virtual { get; set; }
+
+        /// <summary>
+        /// If the product is downloadable. Downloadable products give access to a file upon purchase. Default is false
+        /// </summary>
+        [JsonProperty("downloadable")]
+        public bool Downloadable { get; set; }
+
+        /// <summary>
+        /// List of downloadable files.
+        /// </summary>
+        [JsonProperty("downloads")]
+        public DownloadableFile[] Downloads { get; set; }
+
+        /// <summary>
+        /// Amount of times the product can be downloaded, the -1 values means unlimited re-downloads. Default is -1
+        /// </summary>
+        [JsonProperty("download_limit")]
+        public int DownloadLimit { get; set; }
+
+        /// <summary>
+        /// Number of days that the customer has up to be able to download the product, the -1 means that downloads never expires. Default is -1
+        /// </summary>
+        [JsonProperty("download_expiry")]
+        public int? DownloadExpiry { get; set; }
+
+        /// <summary>
+        /// Download type, this controls the schema on the front-end. Default is standard. Options: 'standard' (Standard Product), application (Application/Software) and music (Music)
+        /// </summary>
+        [JsonProperty("download_type")]
+        public string DownloadType
+        {
+            get
+            {
+                return this.downloadtype;
+            }
+            set
+            {
+                switch (value)
+                {
+                    case "":
+                    case "standard":
+                        this.downloadtype = value;
+                        return;
+
+                    case "application":
+                        this.downloadtype = value;
+                        return;
+
+                    case "music":
+                        this.downloadtype = value;
+                        return;
+
+                    default:
+                        throw new ArgumentException("Invalid value. Choices are '', 'application', 'music'");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Product external URL. Only for external products
+        /// </summary>
+        [JsonProperty("external_url")]
+        public string ExternalUrl { get; set; }
+
+        /// <summary>
+        /// Product external button text. Only for external products
+        /// </summary>
+        [JsonProperty("button_text")]
+        public string ButtonText { get; set; }
+
+        /// <summary>
+        /// Tax status. Default is taxable. Options: taxable, shipping (Shipping only) and none
+        /// </summary>
         [JsonProperty("tax_status")]
         public string TaxStatus
         {
@@ -188,25 +356,33 @@ namespace SharpCommerce.Data.Products
             }
         }
 
+        /// <summary>
+        /// Tax class
+        /// </summary>
         [JsonProperty("tax_class")]
         public string TaxClass { get; set; }
 
+        /// <summary>
+        /// Stock management at product level. Default is false
+        /// </summary>
         [JsonProperty("managing_stock")]
         public bool ManagingStock { get; set; }
 
+        /// <summary>
+        /// Stock quantity. If is a variable product this value will be used to control stock for all variations, unless you define stock at variation level
+        /// </summary>
         [JsonProperty("stock_quantity")]
         public int? StockQuantity { get; set; }
 
+        /// <summary>
+        /// Controls whether or not the product is listed as “in stock” or “out of stock” on the frontend. Default is true
+        /// </summary>
         [JsonProperty("in_stock")]
         public bool InStock { get; set; }
 
-        [JsonProperty("backorders_allowed")]
-        public bool BackordersAllowed { get; set; }
-
-        [JsonProperty("backordered")]
-        public bool BackOrdered { get; set; }
-
-        private string backorders;
+        /// <summary>
+        /// If managing stock, this controls if backorders are allowed. If enabled, stock quantity can go below 0. Default is no. Options are: no (Do not allow), notify (Allow, but notify customer), and yes (Allow)
+        /// </summary>
         [JsonProperty("backorders")]
         public string BackOrders
         {
@@ -218,11 +394,11 @@ namespace SharpCommerce.Data.Products
             {
                 switch (value)
                 {
-                    case "true":
+                    case "yes":
                         this.backorders = value;
                         return;
 
-                    case "false":
+                    case "no":
                         this.backorders = value;
                         return;
 
@@ -232,208 +408,161 @@ namespace SharpCommerce.Data.Products
 
                     default:
                         throw new ArgumentException(
-                            "Invalid value. Choices are 'true', 'false', 'notify'");
+                            "Invalid value. Choices are 'yes', 'no', 'notify'");
                 }
             }
         }
 
+        /// <summary>
+        /// Shows if backorders are allowed [read-only]
+        /// </summary>
+        [JsonProperty("backorders_allowed")]
+        public bool BackordersAllowed { get; set; }
+
+        /// <summary>
+        /// Shows if a product is on backorder (if the product have the stock_quantity negative) [read-only]
+        /// </summary>
+        [JsonProperty("backordered")]
+        public bool BackOrdered { get; set; }
+
+        /// <summary>
+        /// Allow one item to be bought in a single order. Default is false [read-only]
+        /// </summary>
         [JsonProperty("sold_individually")]
         public bool SoldIndividually { get; set; }
 
-        [JsonProperty("purchaseable")]
-        public bool Purchaseable { get; set; }
-
-        [JsonProperty("featured")]
-        public bool Featured { get; set; }
-
-        [JsonProperty("visible")]
-        public bool Visible { get; set; }
-
-        private string catalogvisibility = "visible";
-
-        [JsonProperty("catalog_visibility")]
-        public string CatalogVisibility
-        {
-            get
-            {
-                return this.catalogvisibility;
-            }
-            set
-            {
-                switch (value)
-                {
-                    case "visible":
-                        this.catalogvisibility = value;
-                        return;
-
-                    case "catalog":
-                        this.catalogvisibility = value;
-                        return;
-
-                    case "search":
-                        this.catalogvisibility = value;
-                        return;
-
-                    case "hidden":
-                        this.catalogvisibility = value;
-                        return;
-
-                    default:
-                        throw new ArgumentException("Invalid value. Choices are 'true', 'false', 'notify'");
-                }
-            }
-        }
-
-        [JsonProperty("on_sale")]
-        public bool OnSale { get; set; }
-
+        /// <summary>
+        /// Product weight in decimal format
+        /// </summary>
         [JsonProperty("weight")]
         public float? Weight { get; set; }
 
+        /// <summary>
+        /// Product dimensions
+        /// </summary>
         [JsonProperty("dimensions")]
         public Dimensions Dimensions { get; set; }
 
+        /// <summary>
+        /// Shows if the product need to be shipped [read-only]
+        /// </summary>
         [JsonProperty("shipping_required")]
         public bool ShippingRequired { get; set; }
 
+        /// <summary>
+        /// Shows whether or not the product shipping is taxable [read-only]
+        /// </summary>
         [JsonProperty("shipping_taxable")]
         public bool ShippingTaxable { get; set; }
 
+        /// <summary>
+        /// Shipping class slug. Shipping classes are used by certain shipping methods to group similar products
+        /// </summary>
         [JsonProperty("shipping_class")]
         public string ShippingClass { get; set; }
 
+        /// <summary>
+        /// Shipping class ID [read-only]
+        /// </summary>
         [JsonProperty("shipping_class_id")]
         public int? ShippingClassId { get; set; }
 
-        [JsonProperty("description")]
-        public string Description { get; set; }
-
-        [JsonProperty("enable_html_description")]
-        public bool EnableHtmlDescription { get; set; }
-
-        [JsonProperty("short_description")]
-        public string ShortDescription { get; set; }
-
-        [JsonProperty("enable_html_short_description")]
-        public string EnableHtmlShortDescription { get; set; }
-
+        /// <summary>
+        /// Allow reviews. Default is true
+        /// </summary>
         [JsonProperty("reviews_allowed")]
         public bool ReviewsAllowed { get; set; }
 
+        /// <summary>
+        /// Reviews average rating [read-only]
+        /// </summary>
         [JsonProperty("average_rating")]
         public float? AverageRating { get; set; }
 
+        /// <summary>
+        /// Amount of reviews that the product have [read-only]
+        /// </summary>
         [JsonProperty("rating_count")]
         public int RatingCount { get; set; }
 
+        /// <summary>
+        /// List of related products IDs (integer) [read-only]
+        /// </summary>
         [JsonProperty("related_ids")]
         public int[] RelatedIds { get; set; }
 
+        /// <summary>
+        /// List of up-sell products IDs (integer). Up-sells are products which you recommend instead of the currently viewed product, for example, products that are more profitable or better quality or more expensive
+        /// </summary>
         [JsonProperty("upsell_ids")]
         public int[] UpsellIds { get; set; }
 
+        /// <summary>
+        /// List of cross-sell products IDs. Cross-sells are products which you promote in the cart, based on the current product
+        /// </summary>
         [JsonProperty("cross_sell_ids")]
         public int[] CrossSellIds { get; set; }
 
+        /// <summary>
+        /// Product parent ID (post_parent)
+        /// </summary>
         [JsonProperty("parent_id")]
         public int ParentId { get; set; }
 
-
-        [JsonProperty("images")]
-        public Image[] Images { get; set; }
-
-        [JsonProperty("featured_src")]
-        public string FeaturedImageUrl { get; set; }
-
-        [JsonProperty("attributes")]
-        public Products.Attribute[] Attributes { get; set; }
-
-        [JsonProperty("default_attributes")]
-        public Products.DefaultAttribute[] DefaultAttributes { get; set; }
-
-        [JsonProperty("downloads")]
-        public DownloadableFile[] Downloads { get; set; }
-
-        [JsonProperty("download_limit")]
-        public int DownloadLimit { get; set; }
-
-
-        private string downloadtype = "";
-        [JsonProperty("download_type")]
-        public string DownloadType
-        {
-            get
-            {
-                return this.downloadtype;
-            }
-            set
-            {
-                switch (value)
-                {
-                    case "":
-                        this.downloadtype = value;
-                        return;
-
-                    case "application":
-                        this.downloadtype = value;
-                        return;
-
-                    case "music":
-                        this.downloadtype = value;
-                        return;
-
-                    default:
-                        throw new ArgumentException("Invalid value. Choices are '', 'application', 'music'");
-                }
-            }
-        }
-
+        /// <summary>
+        /// Optional note to send the customer after purchase
+        /// </summary>
         [JsonProperty("purchase_note")]
         public string PuchaseNote { get; set; }
 
-        [JsonProperty("total_sales")]
-        public int AmountOfSales { get; set; }
+        /// <summary>
+        /// List of categories
+        /// </summary>
+        [JsonProperty("categories")]
+        public List<ProductCategory> Categories { get; set; }
 
         /// <summary>
-        /// List of products variations. 
+        /// List of tags
+        /// </summary>
+        [JsonProperty("tags")]
+        public List<ProductTag> Tags { get; set; }
+
+        /// <summary>
+        /// List of images
+        /// </summary>
+        [JsonProperty("images")]
+        public Image[] Images { get; set; }
+
+        /// <summary>
+        /// List of attributes
+        /// </summary>
+        [JsonProperty("attributes")]
+        public Products.Attribute[] Attributes { get; set; }
+
+        /// <summary>
+        /// Defaults variation attributes, used only for variations and pre-selected attributes on the frontend
+        /// </summary>
+        [JsonProperty("default_attributes")]
+        public Products.DefaultAttribute[] DefaultAttributes { get; set; }
+
+        /// <summary>
+        /// List of variations
         /// </summary>
         [JsonProperty("variations")]
         public Variation[] Variations { get; set; }
 
         /// <summary>
-        /// List the product parent data when query for a variation [read-only]
+        /// List of grouped products ID, only for group type products [read-only]
         /// </summary>
-        [JsonProperty("parent")]
-        public Product[] Parent { get; set; }
+        [JsonProperty("grouped_products")]
+        public string[] GroupedProducts { get; set; }
 
         /// <summary>
-        /// Product external URL. Only for external products [write-only]
+        /// Menu order, used to custom sort products
         /// </summary>
-        [JsonProperty("product_url")]
-        public string ProductUrl { get; set; }
+        [JsonProperty("menu_order")]
+        public int MenuOrder { get; set; }
 
-        /// <summary>
-        /// Product external button text. Only for external products [write-only]
-        /// </summary>
-        [JsonProperty("button_text")]
-        public string ButtonText { get; set; }
-
-
-
-
-
-
-        /// /////////////////// ints, vs strings************************************************
-        [JsonProperty("categories")]
-        public string[] Categories { get; set; }
-
-        /// /////////////////// ints, vs strings************************************************
-        [JsonProperty("tags")]
-        public string[] Tags { get; set; }
-
-        // *******blank string on send**********************************
-        [JsonProperty("download_expiry")]
-        public int? DownloadExpiry { get; set; }
     }
 
 }

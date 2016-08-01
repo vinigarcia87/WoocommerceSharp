@@ -10,16 +10,16 @@ namespace SharpCommerce.Data.Products
     public class Attribute
     {
         /// <summary>
-        /// Attribute name [required]
+        /// Attribute ID (required if is a global attribute)
+        /// </summary>
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
+        /// <summary>
+        /// Attribute name (required if is a non-global attribute)
         /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
-
-        /// <summary>
-        /// Attribute slug
-        /// </summary>
-        [JsonProperty("slug")]
-        public string Slug { get; set; }
 
         /// <summary>
         /// Attribute position
@@ -28,13 +28,13 @@ namespace SharpCommerce.Data.Products
         public int Position { get; set; }
 
         /// <summary>
-        /// Shows/define if the attribute is visible on the “Additional Information” tab in the product’s page
+        /// Define if the attribute is visible on the “Additional Information” tab in the product’s page. Default is false
         /// </summary>
         [JsonProperty("visible")]
         public bool Visible { get; set; }
 
         /// <summary>
-        /// Shows/define if the attribute can be used as variation
+        /// Define if the attribute can be used as variation. Default is false
         /// </summary>
         [JsonProperty("variation")]
         public bool Variation { get; set; }
