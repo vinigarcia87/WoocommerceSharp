@@ -56,6 +56,7 @@
                 using (var content = new StringContent(jsonData ?? string.Empty))
                 {
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                     switch (httpMethod)
                     {
                         case HttpMethod.Post:

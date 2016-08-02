@@ -60,6 +60,8 @@
     <Compile Include="Data\Products\DefaultAttribute.cs" />
     <Compile Include="Data\Products\Dimensions.cs" />
     <Compile Include="Data\Products\Image.cs" />
+    <Compile Include="Data\Products\ProdutoPrecoCategoria.cs" />
+    <Compile Include="Data\Products\Produto.cs" />
     <Compile Include="Data\Products\Product.cs" />
     <Compile Include="Data\Products\ProductReview.cs" />
     <Compile Include="Data\Products\ProductAttribute.cs" />
@@ -72,6 +74,7 @@
     <Compile Include="Services\OrderNotesService.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Services\ProdutoService.cs" />
     <Compile Include="Services\ProductTagService.cs" />
     <Compile Include="Services\ProductCategoryService.cs" />
     <Compile Include="Services\ProductService.cs" />

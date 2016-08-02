@@ -19,9 +19,9 @@ namespace SharpCommerce.Data.Products
         private string type = "simple";
         private string status = "publish";
         private string catalogvisibility = "visible";
-        private string downloadtype = "";
-        private string taxstatus;
-        private string backorders;
+        private string downloadtype = "standard";
+        private string taxstatus = "taxable";
+        private string backorders = "no";
 
         /// <summary>
         /// Product ID (post ID) [read-only]
@@ -111,19 +111,19 @@ namespace SharpCommerce.Data.Products
                 switch (value)
                 {
                     case "draft":
-                        this.type = value;
+                        this.status = value;
                         return;
 
                     case "pending":
-                        this.type = value;
+                        this.status = value;
                         return;
 
                     case "private":
-                        this.type = value;
+                        this.status = value;
                         return;
 
                     case "publish":
-                        this.type = value;
+                        this.status = value;
                         return;
 
                     default:
@@ -203,13 +203,13 @@ namespace SharpCommerce.Data.Products
         /// Product regular price
         /// </summary>
         [JsonProperty("regular_price")]
-        public float RegularPrice { get; set; }
+        public string RegularPrice { get; set; }
 
         /// <summary>
         /// Product sale price
         /// </summary>
         [JsonProperty("sale_price")]
-        public float? SalePrice { get; set; }
+        public string SalePrice { get; set; }
 
         /// <summary>
         /// Start date of sale price. Date in the YYYY-MM-DD format
@@ -291,7 +291,6 @@ namespace SharpCommerce.Data.Products
             {
                 switch (value)
                 {
-                    case "":
                     case "standard":
                         this.downloadtype = value;
                         return;
@@ -305,7 +304,7 @@ namespace SharpCommerce.Data.Products
                         return;
 
                     default:
-                        throw new ArgumentException("Invalid value. Choices are '', 'application', 'music'");
+                        throw new ArgumentException("Invalid value. Choices are 'standard', 'application', 'music'");
                 }
             }
         }
@@ -365,8 +364,8 @@ namespace SharpCommerce.Data.Products
         /// <summary>
         /// Stock management at product level. Default is false
         /// </summary>
-        [JsonProperty("managing_stock")]
-        public bool ManagingStock { get; set; }
+        [JsonProperty("manage_stock")]
+        public bool ManageStock { get; set; }
 
         /// <summary>
         /// Stock quantity. If is a variable product this value will be used to control stock for all variations, unless you define stock at variation level
@@ -531,7 +530,7 @@ namespace SharpCommerce.Data.Products
         /// List of images
         /// </summary>
         [JsonProperty("images")]
-        public Image[] Images { get; set; }
+        public List<Image> Images { get; set; }
 
         /// <summary>
         /// List of attributes
