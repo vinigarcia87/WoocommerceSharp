@@ -7,19 +7,15 @@ namespace SharpCommerce.Services
     using SharpCommerce.Web;
     using System.Threading.Tasks;
 
+    /**
+     * The products API allows you to create, view, update, and delete individual, or a batch, of products.
+     */
     public class ProductService : Service
     {
         private const string BaseApiEndpoint = "products";
 
-        public readonly ProductAttributeService Attributes;
-        public readonly ProductCategoryService Categories;
-
         public ProductService(WoocommerceApiDriver apiDriver)
-            : base(apiDriver)
-        {
-            Attributes = new ProductAttributeService(apiDriver);
-            Categories = new ProductCategoryService(apiDriver);
-        }
+            : base(apiDriver) { }
 
         /// <summary>
         /// Create a product
@@ -42,17 +38,6 @@ namespace SharpCommerce.Services
         {
             var endPoint = string.Format("{0}/{1}", BaseApiEndpoint, productId);
             return (await Get<Product>(endPoint));
-        }
-
-        /// <summary>
-        /// View a Product Review
-        /// </summary>
-        /// <param name="productId">The identifier of product</param>
-        /// <returns>A product object</returns>
-        public async Task<IEnumerable<ProductReview>> GetProductReviews(int productId)
-        {
-            var endPoint = string.Format("{0}/{1}/reviews", BaseApiEndpoint, productId);
-            return (await Get<IEnumerable<ProductReview>>(endPoint));
         }
 
         /// <summary>
@@ -81,12 +66,12 @@ namespace SharpCommerce.Services
         /// <summary>
         /// Create or Update Multiple Products
         /// </summary>
-        /// <param name="ordersData">Product object to be updated.</param>
-        /// <returns>Updated product object</returns>
-        public async Task<IEnumerable<Product>> CreateUpdateMany(IEnumerable<Product> ordersData)
+        /// <param name="productsData">List of product object to be updated.</param>
+        /// <returns>List of updated product object</returns>
+        public async Task<IEnumerable<Product>> CreateUpdateMany(IEnumerable<Product> productsData)
         {
-            var endPoint = String.Format("{0}/bulk", BaseApiEndpoint);
-            return (await Put(endPoint, toSerialize: ordersData));
+            var endPoint = String.Format("{0}/batch", BaseApiEndpoint);
+            return (await Put(endPoint, toSerialize: productsData));
         }
 
         /// <summary>
@@ -114,6 +99,27 @@ namespace SharpCommerce.Services
             var apiEndpoint = String.Format("{0}/{1}", BaseApiEndpoint, id);
             var parameters = new Dictionary<string, string> { { "force", force.ToString().ToLower() } };
             return (await Delete<dynamic>(apiEndpoint, parameters)).message;
+        }
+
+        /// <summary>
+        /// View a Product Review
+        /// </summary>
+        /// <param name="productId">The identifier of product</param>
+        /// <returns>A product review object</returns>
+        public async Task<ProductReview> GetProductReview(int productId, int reviewId)
+        {
+            var endPoint = string.Format("{0}/{1}/reviews/{2}", BaseApiEndpoint, productId, reviewId);
+            return (await Get<ProductReview>(endPoint));
+        }
+
+        /// <summary>
+        /// View all Product Reviews
+        /// </summary>
+        /// <returns>List of product review object</returns>
+        public async Task<IEnumerable<ProductReview>> GetProductReviews(int productId)
+        {
+            var endPoint = string.Format("{0}/{1}/reviews", BaseApiEndpoint, productId);
+            return (await Get<IEnumerable<ProductReview>>(endPoint));
         }
 
         /// <summary>

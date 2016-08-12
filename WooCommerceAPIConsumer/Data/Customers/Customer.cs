@@ -16,13 +16,13 @@
         /// The date the customer was created, in the site’s timezone [read-only]
         /// </summary>
         [JsonProperty("date_created")]
-        public DateTime DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; }
 
         /// <summary>
         /// The date the customer was last modified, in the site’s timezone [read-only]
         /// </summary>
         [JsonProperty("date_modified")]
-        public DateTime DateModified { get; set; }
+        public DateTime? DateModified { get; set; }
 
         /// <summary>
         /// The email address for the customer [mandatory]

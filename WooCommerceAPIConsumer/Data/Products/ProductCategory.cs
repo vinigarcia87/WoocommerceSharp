@@ -1,9 +1,12 @@
 ﻿namespace SharpCommerce.Data.Products
 {
     using Newtonsoft.Json;
+    using System;
 
     public class ProductCategory
     {
+        // Default values for some
+        private string display = "default";
 
         /// <summary>
         /// Category ID (term ID) [read-only]
@@ -39,7 +42,38 @@
         /// Category archive display type. Default is default. Options: default, products, subcategories and both
         /// </summary>
         [JsonProperty("display")]
-        public string Display { get; set; }
+        public string Display
+        {
+            get
+            {
+                return this.display;
+            }
+            set
+            {
+                switch (value)
+                {
+                    case "default":
+                        this.display = value;
+                        return;
+
+                    case "products":
+                        this.display = value;
+                        return;
+
+                    case "subcategories":
+                        this.display = value;
+                        return;
+
+                    case "both":
+                        this.display = value;
+                        return;
+
+                    default:
+                        throw new ArgumentException(
+                            "Invalid category archive display type. Choices are 'default', 'products', 'subcategories' and 'both'");
+                }
+            }
+        }
 
         /// <summary>
         /// Category Image data

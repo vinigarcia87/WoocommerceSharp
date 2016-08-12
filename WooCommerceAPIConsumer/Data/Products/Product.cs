@@ -15,7 +15,7 @@ namespace SharpCommerce.Data.Products
 
     public class Product
     {
-        // Default values for some.
+        // Default values for some
         private string type = "simple";
         private string status = "publish";
         private string catalogvisibility = "visible";
@@ -51,13 +51,13 @@ namespace SharpCommerce.Data.Products
         /// The date the product was created, in the site’s timezone [read-only]
         /// </summary>
         [JsonProperty("date_created")]
-        public DateTime DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; }
 
         /// <summary>
         /// The date the product was last modified, in the site’s timezone [read-only]
         /// </summary>
         [JsonProperty("date_modified")]
-        public DateTime DateModified { get; set; }
+        public DateTime? DateModified { get; set; }
 
         /// <summary>
         /// Product type. Default is simple. Options: simple, grouped, external, variable
@@ -91,7 +91,7 @@ namespace SharpCommerce.Data.Products
 
                     default:
                         throw new ArgumentException(
-                            "Invalid product type. Choices are 'simple', 'grouped', 'external', 'variable'");
+                            "Invalid product type. Choices are 'simple', 'grouped', 'external' and 'variable'");
                 }
             }
         }
@@ -215,13 +215,13 @@ namespace SharpCommerce.Data.Products
         /// Start date of sale price. Date in the YYYY-MM-DD format
         /// </summary>
         [JsonProperty("date_on_sale_from")]
-        public DateTime? SalePriceDatesFrom { get; set; }
+        public string SalePriceDatesFrom { get; set; }
 
         /// <summary>
         /// Sets the sale end date. Date in the YYYY-MM-DD format
         /// </summary>
         [JsonProperty("date_on_sale_to")]
-        public DateTime? SalePriceDatesTo { get; set; }
+        public string SalePriceDatesTo { get; set; }
 
         /// <summary>
         /// Price formatted in HTML, e.g. <del><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;&nbsp;3.00</span></span></del> <ins><span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;&nbsp;2.00</span></span></ins> [read-only]
@@ -434,7 +434,7 @@ namespace SharpCommerce.Data.Products
         /// Product weight in decimal format
         /// </summary>
         [JsonProperty("weight")]
-        public float? Weight { get; set; }
+        public string Weight { get; set; }
 
         /// <summary>
         /// Product dimensions
@@ -476,7 +476,7 @@ namespace SharpCommerce.Data.Products
         /// Reviews average rating [read-only]
         /// </summary>
         [JsonProperty("average_rating")]
-        public float? AverageRating { get; set; }
+        public string AverageRating { get; set; }
 
         /// <summary>
         /// Amount of reviews that the product have [read-only]

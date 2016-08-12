@@ -7,6 +7,9 @@
     using SharpCommerce.Web;
     using System.Threading.Tasks;
 
+    /**
+     * The coupons API allows you to create, view, update, and delete individual, or a batch, of coupon codes.
+     */
     public class CouponService : Service
     {
         private const string BaseApiEndpoint = "coupons";
@@ -64,7 +67,7 @@
         /// <returns></returns>
         public async Task<IEnumerable<Coupon>> CreateUpdateMany(IEnumerable<Coupon> ordersData)
         {
-            var endPoint = String.Format("{0}/bulk", BaseApiEndpoint);
+            var endPoint = String.Format("{0}/batch", BaseApiEndpoint);
             return (await Put(endPoint, toSerialize: ordersData));
         }
 

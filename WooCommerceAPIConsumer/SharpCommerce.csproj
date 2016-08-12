@@ -50,23 +50,25 @@
     <Compile Include="Data\Customers\Address.cs" />
     <Compile Include="Data\Customers\LastOrder.cs" />
     <Compile Include="Data\Customers\BillingAddress.cs" />
-    <Compile Include="Data\Customers\CustomersBundle.cs" />
     <Compile Include="Data\Customers\Customer.cs" />
-    <Compile Include="Data\Customers\CustomerBundle.cs" />
     <Compile Include="Data\Downloads\Download.cs" />
     <Compile Include="Data\Downloads\DownloadableFile.cs" />
+    <Compile Include="Data\Orders\Refund.cs" />
     <Compile Include="Data\Orders\TaxItem.cs" />
     <Compile Include="Data\Products\Attribute.cs" />
+    <Compile Include="Data\Products\ProductShippingClass.cs" />
     <Compile Include="Data\Products\DefaultAttribute.cs" />
     <Compile Include="Data\Products\Dimensions.cs" />
     <Compile Include="Data\Products\Image.cs" />
-    <Compile Include="Data\Products\ProdutoPrecoCategoria.cs" />
-    <Compile Include="Data\Products\Produto.cs" />
+    <Compile Include="Data\Products\ProductAttributeTerm.cs" />
     <Compile Include="Data\Products\Product.cs" />
     <Compile Include="Data\Products\ProductReview.cs" />
     <Compile Include="Data\Products\ProductAttribute.cs" />
     <Compile Include="Data\Products\ProductTag.cs" />
     <Compile Include="Data\Products\ProductCategory.cs" />
+    <Compile Include="Services\ProductAttributeTermService.cs" />
+    <Compile Include="Services\ProductShippingClassService.cs" />
+    <Compile Include="Services\RefundService.cs" />
     <Compile Include="Services\ProductAttributeService.cs" />
     <Compile Include="Services\CouponService.cs" />
     <Compile Include="Services\CustomerService.cs" />
@@ -74,7 +76,6 @@
     <Compile Include="Services\OrderNotesService.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Services\ProdutoService.cs" />
     <Compile Include="Services\ProductTagService.cs" />
     <Compile Include="Services\ProductCategoryService.cs" />
     <Compile Include="Services\ProductService.cs" />

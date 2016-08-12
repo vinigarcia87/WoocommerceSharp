@@ -15,19 +15,19 @@ namespace SharpCommerce.Data.Products
         /// Product length in decimal format
         /// </summary>
         [JsonProperty("length")]
-        public float? Length { get; set; }
+        public string Length { get; set; }
 
         /// <summary>
         /// Product width in decimal format
         /// </summary>
         [JsonProperty("width")]
-        public float? Width { get; set; }
+        public string Width { get; set; }
 
         /// <summary>
         /// Product height in decimal format
         /// </summary>
         [JsonProperty("height")]
-        public float? Height { get; set; }
+        public string Height { get; set; }
 
     }
 }

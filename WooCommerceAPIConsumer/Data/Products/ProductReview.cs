@@ -34,13 +34,13 @@ namespace SharpCommerce.Data.Products
         public string Name { get; set; }
 
         /// <summary>
-        /// Reviewer email
+        /// Reviewer email [read-only]
         /// </summary>
         [JsonProperty("email")]
         public string Email { get; set; }
 
         /// <summary>
-        /// Shows if the reviewer bought the product or not
+        /// Shows if the reviewer bought the product or not [read-only]
         /// </summary>
         [JsonProperty("verified")]
         public bool Verified { get; set; }

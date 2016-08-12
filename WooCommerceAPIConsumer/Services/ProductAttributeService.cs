@@ -7,6 +7,9 @@ namespace SharpCommerce.Services
     using SharpCommerce.Web;
     using System.Threading.Tasks;
 
+    /**
+     * The product attributes API allows you to create, view, update, and delete individual, or a batch, of product attributes.
+     */
     public class ProductAttributeService : Service
     {
         private const string BaseApiEndpoint = "products/attributes";
@@ -58,17 +61,19 @@ namespace SharpCommerce.Services
         }
 
         /// <summary>
-        /// Delete a product attribute
+        /// Create or Update Multiple Product Attributes
         /// </summary>
-        /// <param name="id">The identifier of product attribute</param>
+        /// <param name="productAttributeData">List of Product Attributes object to be created or udpated</param>
         /// <returns></returns>
-        public async Task<string> MoveToTrash(int id)
+        public async Task<IEnumerable<ProductAttribute>> CreateUpdateMany(IEnumerable<ProductAttribute> productAttributeData)
         {
-            return await Delete(id);
+            var endPoint = string.Format("{0}/batch", BaseApiEndpoint);
+            return (await Put(apiEndpoint: endPoint, toSerialize: productAttributeData));
         }
 
         /// <summary>
         /// Delete a Product Attribute Permanently
+        /// Note: This also will delete all terms from the selected attribute
         /// </summary>
         /// <param name="id">The identifier of product attribute</param>
         /// <returns></returns>

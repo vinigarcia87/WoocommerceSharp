@@ -19,13 +19,13 @@ namespace SharpCommerce.Data.Products
         /// The date the image was created, in the site’s timezone [read-only]
         /// </summary>
         [JsonProperty("date_created")]
-        public DateTime DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; }
 
         /// <summary>
         /// The date the image was last modified, in the site’s timezone [read-only]
         /// </summary>
         [JsonProperty("date_modified")]
-        public DateTime DateModified { get; set; }
+        public DateTime? DateModified { get; set; }
 
         /// <summary>
         /// Image URL. In write-mode you can use to send new images

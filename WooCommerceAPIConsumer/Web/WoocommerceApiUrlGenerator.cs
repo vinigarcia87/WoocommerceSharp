@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
     using System.Security.Cryptography;
     using System.Text;
     using System.Text.RegularExpressions;
@@ -12,12 +14,14 @@
     internal class WoocommerceApiUrlGenerator
     {
         private const string SignatureMethod = "HMAC-SHA1";
-        private readonly string ApiRootEndpoint; // "wp-json/wc/v1/"; // "wc-api/v3/"; // "wp-json/wc-dexpecas/v1/";
+        private readonly string ApiRootEndpoint; // "wp-json/wc/v1/";
         private readonly string baseURI;
         private readonly string consumerKey;
         private readonly string consumerSecret;
+        public readonly bool IsSsl;
+        public readonly bool QueryStringAuth;
 
-        internal WoocommerceApiUrlGenerator(string storeUrl, string consumerKey, string consumerSecret, string apiRootEndPoint)
+        internal WoocommerceApiUrlGenerator(string storeUrl, string consumerKey, string consumerSecret, string apiRootEndPoint, bool isSsl = false, bool queryStringAuth = false)
         {
             if (
                 string.IsNullOrEmpty(consumerKey) ||
@@ -31,6 +35,8 @@
             this.consumerKey = consumerKey;
             this.consumerSecret = consumerSecret;
             this.ApiRootEndpoint = apiRootEndPoint;
+            this.IsSsl = isSsl;
+            this.QueryStringAuth = queryStringAuth;
 
             // Need 'http://www.example.com' to be 'http://www.example.com/wp-json/wc/v1/'
             this.baseURI = String.Format("{0}/{1}", storeUrl.TrimEnd('/'), ApiRootEndpoint);
@@ -38,32 +44,7 @@
 
         internal string GenerateRequestUrl(HttpMethod httpMethod, string apiEndpoint, Dictionary<string, string> parameters = null)
         {
-            parameters = parameters ?? new Dictionary<string, string>();
-
-            parameters["oauth_consumer_key"] = this.consumerKey;
-
-            // oauth_timestamp = number of seconds since 1/1/1970 00:00:00 GMT
-            // must be a positive integer
-            // must be greater than timestamp of previous requests
-            parameters["oauth_timestamp"] =
-                Math.Round(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds).ToString(CultureInfo.InvariantCulture);
-
-            // oauth_nonce = a unique random string for the timestamp.
-            // defends against replay attacks
-            // service provide will know that this request has never been made before.
-            // Just going to hash the time stamp.
-            //parameters["oauth_nonce"] = GenerateNonce(parameters["oauth_timestamp"]);
-            
-            // Create random 32 char alphnumeric to avoid reused nonces
-            parameters["oauth_nonce"] = GenerateNonce();
-
-            // Declare the hashing method your using
-            parameters["oauth_signature_method"] = SignatureMethod;
-
-            //parameters["oauth_version"] = "1.0";
-
-            parameters["oauth_signature"] = UpperCaseUrlEncode(this.GenerateSignature(httpMethod, apiEndpoint, parameters));
-
+            parameters = OAuthOneAuth(httpMethod, apiEndpoint, parameters);
 
             var sb = new StringBuilder();
             foreach (var pair in parameters)
@@ -72,7 +53,14 @@
             }
 
             // Substring removes first '&'
-            var queryString = sb.ToString().Substring(1);
+            var queryString = !String.IsNullOrEmpty(sb.ToString()) ? sb.ToString().Substring(1) : "";
+
+            // Occasionally some servers may not parse the Authorization header correctly.
+            // In this case, you may provide the consumer key/secret as query string parameters instead
+            if (this.IsSsl && this.QueryStringAuth)
+            {
+                queryString = ("consumer_key=" + this.consumerKey + "&consumer_secret=" + this.consumerSecret) + queryString;
+            }
 
             var url = this.baseURI + apiEndpoint + "?" + queryString;
             
@@ -186,6 +174,53 @@
             }
  
             return nonceString.ToString();
+        }
+
+        // Authentication over HTTPS
+        // You must use OAuth 1.0a "one-legged" authentication to ensure REST API credentials cannot be intercepted by an attacker.
+        // We could use any standard OAuth 1.0a library to handle the authentication, but we did this by generate the necessary parameters by ourselves
+        public Dictionary<string, string> OAuthOneAuth(HttpMethod httpMethod, string apiEndpoint, Dictionary<string, string> parameters = null)
+        {
+            parameters = parameters ?? new Dictionary<string, string>();
+
+            if (!this.IsSsl)
+            {
+                parameters["oauth_consumer_key"] = this.consumerKey;
+
+                // oauth_timestamp = number of seconds since 1/1/1970 00:00:00 GMT
+                // must be a positive integer
+                // must be greater than timestamp of previous requests
+                parameters["oauth_timestamp"] = Math.Round(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds).ToString(CultureInfo.InvariantCulture);
+
+                // oauth_nonce = a unique random string for the timestamp.
+                // defends against replay attacks
+                // service provide will know that this request has never been made before.
+                // Create random 32 char alphnumeric to avoid reused nonces
+                parameters["oauth_nonce"] = GenerateNonce();
+
+                // Declare the hashing method your using
+                parameters["oauth_signature_method"] = SignatureMethod;
+
+                // oauth_version is not required and should be omitted
+                //parameters["oauth_version"] = "1.0";
+
+                parameters["oauth_signature"] = UpperCaseUrlEncode(this.GenerateSignature(httpMethod, apiEndpoint, parameters));
+            }
+
+            return parameters;
+        }
+
+        // Authentication over HTTP
+        // You may use HTTP Basic Auth by providing the REST API Consumer Key as the username and the REST API Consumer Secret as the password
+        public AuthenticationHeaderValue HttpBasicAuth()
+        {
+            if (this.IsSsl)
+            {
+                var credentials = string.Format("{0}:{1}", this.consumerKey, this.consumerSecret);
+                return new AuthenticationHeaderValue("Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(credentials)));
+            }
+
+            return null;
         }
     }
 }

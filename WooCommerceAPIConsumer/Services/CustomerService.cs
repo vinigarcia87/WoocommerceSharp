@@ -9,6 +9,9 @@ namespace SharpCommerce.Services
     using SharpCommerce.Data.Orders;
     using SharpCommerce.Web;
 
+    /**
+     * The customer API allows you to create, view, update, and delete individual, or a batch, of customers.
+     */
     public class CustomerService : Service
     {
         private const string BaseApiEndpoint = "customers";
@@ -77,8 +80,14 @@ namespace SharpCommerce.Services
         /// <returns></returns>
         public async Task<string> DeletePermanently(int id)
         {
-            var endPoint = string.Format("{0}/{1}", BaseApiEndpoint, id);
-            return (await Delete<dynamic>(endPoint)).message;
+            return await Delete(id, force: true);
+        }
+
+        private async Task<string> Delete(int id, bool force = false)
+        {
+            var apiEndpoint = String.Format("{0}/{1}", BaseApiEndpoint, id);
+            var parameters = new Dictionary<string, string> { { "force", force.ToString().ToLower() } };
+            return (await Delete<dynamic>(apiEndpoint, parameters)).message;
         }
 
         /// <summary>

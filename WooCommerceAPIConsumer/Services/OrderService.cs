@@ -7,17 +7,15 @@ namespace SharpCommerce.Services
     using SharpCommerce.Web;
     using System.Threading.Tasks;
 
+    /**
+     * The orders API allows you to create, view, update, and delete individual, or a batch, of orders.
+     */
     public class OrderService : Service
     {
         private const string BaseApiEndpoint = "orders";
 
-        public readonly OrderNotesService Notes;
-
         public OrderService(WoocommerceApiDriver apiDriver)
-            : base(apiDriver)
-        {
-            Notes   = new OrderNotesService(apiDriver);
-        }
+            : base(apiDriver) { }
 
         /// <summary>
         /// Create an Order
@@ -57,7 +55,7 @@ namespace SharpCommerce.Services
         /// <returns></returns>
         public async Task<IEnumerable<Order>> CreateUpdateMany(IEnumerable<Order> ordersData)
         {
-            var endPoint = string.Format("{0}/bulk", BaseApiEndpoint);
+            var endPoint = string.Format("{0}/batch", BaseApiEndpoint);
             return (await Put(apiEndpoint: endPoint, toSerialize: ordersData));
         }
 
@@ -93,6 +91,13 @@ namespace SharpCommerce.Services
             return await Delete(id, force: true);
         }
 
+        private async Task<string> Delete(int id, bool force = false)
+        {
+            var endPoint = String.Format("{0}/{1}", BaseApiEndpoint, id);
+            var parameters = new Dictionary<string, string> { { "force", force.ToString().ToLower() } };
+            return (await Delete<dynamic>(endPoint, parameters)).message;
+        }
+
         /// <summary>
         /// View Orders Count
         /// </summary>
@@ -104,11 +109,5 @@ namespace SharpCommerce.Services
             return (await Get<dynamic>(endPoint, parameters)).count; 
         }
 
-        private async Task<string> Delete(int id, bool force = false)
-        {
-            var apiEndpoint = String.Format("{0}/{1}", BaseApiEndpoint, id);
-            var parameters = new Dictionary<string, string> { { "force", force.ToString().ToLower() } };
-            return (await Delete<dynamic>(apiEndpoint, parameters)).message;
-        }
     }
 }

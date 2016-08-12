@@ -7,9 +7,14 @@ namespace SharpCommerce.Services
     using SharpCommerce.Web;
     using System.Threading.Tasks;
 
+    /**
+     * The order notes API allows you to create, view, and delete individual order notes.
+     * Order notes are added by administrators and programmatically to store data about an order, or order events.
+     */
     public class OrderNotesService : Service
     {
-        public OrderNotesService(WoocommerceApiDriver apiDriver) : base(apiDriver) { }
+        public OrderNotesService(WoocommerceApiDriver apiDriver)
+            : base(apiDriver) { }
 
         /// <summary>
         /// Create a Note For an Order
@@ -44,19 +49,6 @@ namespace SharpCommerce.Services
         {
             var endPoint = String.Format("orders/{0}/notes", orderId);
             return (await Get<IEnumerable<OrderNote>>(endPoint));
-        }
-
-        /// <summary>
-        /// Update An Order Note
-        /// </summary>
-        /// <param name="orderId">The identifier of Order</param>
-        /// <param name="noteId">The identifier of Note</param>
-        /// <param name="newData">Order Note object to be udpated</param>
-        /// <returns></returns>
-        public async Task<OrderNote> Update(int orderId, int noteId, OrderNote newData)
-        {
-            var endPoint = String.Format("orders/{0}/notes/{1}", orderId, noteId);
-            return (await Put(endPoint, toSerialize: newData));
         }
 
         /// <summary>
