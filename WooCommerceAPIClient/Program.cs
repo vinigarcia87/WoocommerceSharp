@@ -1,93 +1,69 @@
 ﻿using System;
 
-namespace WooCommerceAPIClient {
-  using SharpCommerce;
-  using SharpCommerce.Data.Customers;
-  using SharpCommerce.Data.Orders;
-  using System.Collections.Generic;
+namespace WooCommerceAPIClient
+{
+    using SharpCommerce;
+    using SharpCommerce.Data.Customers;
+    using SharpCommerce.Data.Orders;
+    using System.Collections.Generic;
 
-  using SharpCommerce.Services;
+    using SharpCommerce.Services;
+    using SharpCommerce.Data.Products;
+    using System.Linq;
 
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            #region Credentials
 
-  class Program {
-    static void Main(string[] args) {
-      const string StoreUrl = "http://mywebsite.com/";
-      const string ConsumerKey = "ck_xxxxxxxxxxxxxxxxxxxxxxxxx";
-      const string ConsumerSecret = "cs_xxxxxxxxxxxxxxxxxxxxxxxxx";
+            // Wordpress Server
+            const string StoreUrl = "https://mywebsite.com/";
+            const string ConsumerKey = "ck_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+            const string ConsumerSecret = "cs_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+            const bool IsSsl = true;
+            const bool QueryStringAuth = false; // Force Basic Authentication as query string true and using under HTTPS
 
-      var api = new WoocommerceApiClient(StoreUrl, ConsumerKey, ConsumerSecret);
-      var parameters = new Dictionary<string, string>();
+            #endregion
 
-      var result = api.Products.Get(99).Result;
+            var api = new WoocommerceApiClient(StoreUrl, ConsumerKey, ConsumerSecret, IsSsl, QueryStringAuth);
+            var parameters = new Dictionary<string, string>();
 
-      Console.Write("{0}", result.Name);
+            #region Category
 
-      // ORDERS /////////////////////////////////////////
+            ProductCategory categoria = new ProductCategory
+            {
+                Name = "New Category",
+                Slug = "new-category",
+                Descripton = "Nice description about this new category",
+                Display = "default",
+                Image = new Image
+                {
+                    Src = "http://omecanico.com.br/wp-content/uploads/2016/02/626-ALLISON-4000-Series.jpg",
+                }
+            };
 
-      // View All Orders
-      // Only returns last 4?
-      // set limit to override default page size
-      //api.Parameters.AddFilterLimit(200);
-      //var vaoresult = api.Orders.Get(parameters);
+            var catResult = api.ProductCategories.Create(categoria).Result;
+            Console.WriteLine("{0} - {1} - {2} - {3}", catResult.Id, catResult.Name, catResult.Slug, catResult.Descripton);
 
-      // View All Orders of a Given Status
-      // Only returning 4
-      // parameters.AddFilterLimit(30);
-      // parameters.AddFilterStatus("cancelled");
-      // var vaogsresult = api.Orders.Get(parameters);
+            #endregion
 
+            Console.WriteLine("Press enter to start the next test...");
+            Console.ReadLine();
 
-      // Update An Order
-      //var uaoresult = api.Orders.Update(3056, new Order { BillingAddress = new BillingAddress { FirstName = "jjj" }});
+            #region Produtos
 
-      // Update/Create Many
-      // If valid id given, update. else, create.
-      //var ucmresult = api.Orders.CreateUpdateMany(new List<Order>
-      //{
-      //    new Order { Id = 3030, BillingAddress = new BillingAddress { FirstName = "ddd" }},
-      //    new Order { Id = 3028, BillingAddress = new BillingAddress { FirstName = "eee" }},
-      //    new Order { Id = 3025, BillingAddress = new BillingAddress { FirstName = "fff" }},
-      //    new Order { BillingAddress = new BillingAddress { FirstName = "ggg" }},
-      //});
+            var id = 99;
+            var productResult = api.Products.Get(id).Result;
+            Console.WriteLine("( {0} ) {1} - {2}", productResult.Id, productResult.Sku, productResult.Name);
 
-      // Delete an order Permanently
-      // var resultMessagePerm = api.Orders.DeletePermanently(3134); // Permanently Deleted Order
+            #endregion
 
-      // Delete An Order (move to Trash)
-      //var resultMessage = api.Orders.MoveToTrash(3031);
+            /* *********************************************** */
 
-      // View Orders Count by Status
-      //var ordersCountCancelled = api.Orders.Count(OrderStatus.Cancelled);
+            Console.WriteLine("Press enter to close...");
+            Console.ReadLine();
 
-      // View Orders Count
-      //var ordersCountAll = api.Orders.Count();
-
-      // View List Of Order Statuses
-      //var vloos = api.Orders.GetStatuses();
-
-      // ORDER NOTES //////////
-
-
-      // View An Order Note
-      //var dResult = api.Orders.Notes.Get(3028, 656);
-      //var text = new ReadOnlyClass { Id = 2 };
-
-      // Create A Note For An Order
-      // var vaonResult = api.Orders.Notes.Create(3030, new OrderNote { Note = "This is a new note1!" });
-
-      // Update An Order Note
-      // var uResult = api.Orders.Notes.Update(3030, 1566, new OrderNote { Note = "This is the updated note." });
-
-      // Delete An Order Note
-      // var dResult = api.Orders.Notes.Delete(3030, 1567);
-
-      // View List Of Notes From An Order
-      // var vlonResult = api.Orders.Notes.Get(3028);
-
-
-      // COUPONS
-      //parameters.AddFilterLimit(30);
-      //var gcsResult = api.Coupons.Get(parameters);
+        }
     }
-  }
 }
