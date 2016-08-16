@@ -97,7 +97,7 @@ namespace SharpCommerce.Data.Products
         }
 
         /// <summary>
-        /// Product status (post status). Default is publish. Options: draft, pending, private and publish
+        /// Product status (post status). Default is publish. Options: draft, pending, private, publish and trash
         /// </summary>
         [JsonProperty("status")]
         public string Status
@@ -126,9 +126,13 @@ namespace SharpCommerce.Data.Products
                         this.status = value;
                         return;
 
+                    case "trash":
+                        this.status = value;
+                        return;
+
                     default:
                         throw new ArgumentException(
-                            "Invalid product status. Choices are 'draft', 'pending', 'private', 'publish'");
+                            "Invalid product status. Choices are 'draft', 'pending', 'private', 'publish', 'trash'");
                 }
             }
         }

@@ -2,6 +2,7 @@
 {
     using Newtonsoft.Json;
     using System;
+    using System.Collections.Generic;
 
     public class ProductCategory
     {
@@ -79,7 +80,7 @@
         /// Category Image data
         /// </summary>
         [JsonProperty("image")]
-        public Image Image { get; set; }
+        public List<Image> Image { get; set; }
 
         /// <summary>
         /// Menu order, used to custom sort the resource 

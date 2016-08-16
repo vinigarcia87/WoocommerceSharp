@@ -36,7 +36,7 @@
             this.consumerSecret = consumerSecret;
             this.ApiRootEndpoint = apiRootEndPoint;
             this.IsSsl = isSsl;
-            this.QueryStringAuth = queryStringAuth;
+            this.QueryStringAuth = queryStringAuth; // Force Basic Authentication as query string true and using under HTTPS
 
             // Need 'http://www.example.com' to be 'http://www.example.com/wp-json/wc/v1/'
             this.baseURI = String.Format("{0}/{1}", storeUrl.TrimEnd('/'), ApiRootEndpoint);
