@@ -106,7 +106,7 @@
         /// Shows if the prices included tax during checkout [read-only]
         /// </summary>
         [JsonProperty("prices_include_tax")]
-        public int PricesIncludeTax { get; set; }
+        public bool PricesIncludeTax { get; set; }
 
         /// <summary>
         /// The date the order was created, in the site’s timezone [read-only]
@@ -238,7 +238,7 @@
         /// The date the order has been paid, in the site’s timezone [read-only]
         /// </summary>
         [JsonProperty("date_paid")]
-        public DateTime DatePaid { get; set; }
+        public DateTime? DatePaid { get; set; }
 
         /// <summary>
         /// MD5 hash of cart items to ensure orders are not modified [read-only]
