@@ -10,6 +10,11 @@ I just change the behavior, refactor and bug fixing from the original codes.
 ## Usage
 Keep it simple, just instantiate the WoocommerceApiClient and you are ready to go.
 ```cs
+const string StoreUrl = "https://mywebsite.com/";
+const string ConsumerKey = "ck_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const string ConsumerSecret = "cs_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const bool IsSsl = true;
+const bool QueryStringAuth = false;
 var api = new WoocommerceApiClient(StoreUrl, ConsumerKey, ConsumerSecret, IsSsl, QueryStringAuth);
 ```
 ### Examples
@@ -24,7 +29,7 @@ var result = await api.Products.Get(); // to call async
 ```csharp
 var OrdersList = api.Orders.Get().Result;
 foreach (Order Order in OrdersList) {
-	Console.WriteLine("Pedido: #{0}; Pedidos Valor Total: {1}; Status do Pedido: {2}; Método de Pagamento: {3}", Order.Number, Order.Total, Order.Status, Order.PaymentMethodTitle);
+	Console.WriteLine("Order: #{0}; Order Total Value: {1}; Order Status: {2}; Payment Method: {3}", Order.Number, Order.Total, Order.Status, Order.PaymentMethodTitle);
 }
 ```
 
@@ -39,7 +44,7 @@ var categoryResult = api.ProductCategories.Create(category).Result;
 Console.WriteLine("Category: {0} - {1} - {2}", categoryResult.Id, categoryResult.Name, categoryResult.Slug);
 ```
 
-* Will be updated later for full usage documentation. *
+* Will be updated later for full usage documentation.
 
 ## To Do List
 - ...;
