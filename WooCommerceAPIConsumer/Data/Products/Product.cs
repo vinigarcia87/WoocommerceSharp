@@ -536,7 +536,7 @@ namespace SharpCommerce.Data.Products
         /// List of attributes
         /// </summary>
         [JsonProperty("attributes")]
-        public Products.Attribute[] Attributes { get; set; }
+        public List<Products.Attribute> Attributes { get; set; }
 
         /// <summary>
         /// Defaults variation attributes, used only for variations and pre-selected attributes on the frontend
