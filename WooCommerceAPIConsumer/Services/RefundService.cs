@@ -6,6 +6,7 @@ namespace SharpCommerce.Services
     using SharpCommerce.Data.Orders;
     using SharpCommerce.Web;
     using System.Threading.Tasks;
+    using Data;
 
     /**
      * The refunds API allows you to create, view, and delete individual refunds.
@@ -44,10 +45,10 @@ namespace SharpCommerce.Services
         /// </summary>
         /// <param name="orderId">The identifier of Order</param>
         /// <returns></returns>
-        public async Task<IEnumerable<Refund>> Get(int orderId, Dictionary<string, string> parameters = null)
+        public async Task<IEnumerable<Refund>> Get(int orderId, Dictionary<string, string> parameters = null, RequestHeaderParams headerParams = null)
         {
             var endPoint = String.Format("orders/{0}/refunds", orderId);
-            return (await Get<IEnumerable<Refund>>(endPoint, parameters: parameters));
+            return (await Get<IEnumerable<Refund>>(endPoint, parameters: parameters, headerParams: headerParams));
         }
 
         /// <summary>

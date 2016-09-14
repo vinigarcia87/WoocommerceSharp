@@ -6,6 +6,7 @@
     using SharpCommerce.Data.Coupons;
     using SharpCommerce.Web;
     using System.Threading.Tasks;
+    using Data;
 
     /**
      * The coupons API allows you to create, view, update, and delete individual, or a batch, of coupon codes.
@@ -43,9 +44,9 @@
         /// </summary>
         /// <param name="parameters">Parameter to filter list of coupon</param>
         /// <returns>List of Coupon objects</returns>
-        public async Task<IEnumerable<Coupon>> Get(Dictionary<string, string> parameters = null)
+        public async Task<IEnumerable<Coupon>> Get(Dictionary<string, string> parameters = null, RequestHeaderParams headerParams = null)
         {
-            return (await Get<IEnumerable<Coupon>>(BaseApiEndpoint, parameters));
+            return (await Get<IEnumerable<Coupon>>(BaseApiEndpoint, parameters, headerParams: headerParams));
         }
 
         /// <summary>

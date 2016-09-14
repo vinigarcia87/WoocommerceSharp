@@ -66,6 +66,7 @@
     <Compile Include="Data\Products\ProductAttribute.cs" />
     <Compile Include="Data\Products\ProductTag.cs" />
     <Compile Include="Data\Products\ProductCategory.cs" />
+    <Compile Include="Data\RequestHeaderParams.cs" />
     <Compile Include="Services\ProductAttributeTermService.cs" />
     <Compile Include="Services\ProductShippingClassService.cs" />
     <Compile Include="Services\RefundService.cs" />

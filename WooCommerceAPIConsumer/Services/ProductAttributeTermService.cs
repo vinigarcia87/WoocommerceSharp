@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace SharpCommerce.Services
 {
+    using Data;
     using SharpCommerce.Data.Products;
     using SharpCommerce.Web;
     using System.Threading.Tasks;
@@ -47,10 +48,10 @@ namespace SharpCommerce.Services
         /// <param name="productAttributeId">The identifiter of product attribute</param>
         /// <param name="parameters">Parameter to filter list of product attribute terms</param>
         /// <returns>List of product attribute terms object</returns>
-        public async Task<IEnumerable<ProductAttributeTerm>> Get(int productAttributeId, Dictionary<string, string> parameters = null)
+        public async Task<IEnumerable<ProductAttributeTerm>> Get(int productAttributeId, Dictionary<string, string> parameters = null, RequestHeaderParams headerParams = null)
         {
             var endPoint = String.Format("{0}/{1}/terms", BaseApiEndpoint, productAttributeId);
-            return (await Get<IEnumerable<ProductAttributeTerm>>(apiEndpoint: endPoint, parameters: parameters));
+            return (await Get<IEnumerable<ProductAttributeTerm>>(apiEndpoint: endPoint, parameters: parameters, headerParams: headerParams));
         }
 
         /// <summary>

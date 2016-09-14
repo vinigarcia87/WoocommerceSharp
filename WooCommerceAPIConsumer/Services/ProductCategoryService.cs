@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 namespace SharpCommerce.Services
 {
+    using Data;
     using SharpCommerce.Data.Products;
     using SharpCommerce.Web;
 
@@ -46,10 +47,10 @@ namespace SharpCommerce.Services
         /// </summary>
         /// <param name="parameters">Parameters to filter list of product categories</param>
         /// <returns>List of Products Object</returns>
-        public async Task<IEnumerable<ProductCategory>> Get(Dictionary<string, string> parameters = null)
+        public async Task<IEnumerable<ProductCategory>> Get(Dictionary<string, string> parameters = null, RequestHeaderParams headerParams = null)
         {
             var endPoint = String.Format("{0}", BaseApiEndpoint);
-            return (await Get<IEnumerable<ProductCategory>>(endPoint, parameters));
+            return (await Get<IEnumerable<ProductCategory>>(endPoint, parameters, headerParams: headerParams));
         }
 
         /// <summary>

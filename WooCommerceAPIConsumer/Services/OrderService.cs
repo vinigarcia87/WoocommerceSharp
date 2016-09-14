@@ -6,6 +6,7 @@ namespace SharpCommerce.Services
     using SharpCommerce.Data.Orders;
     using SharpCommerce.Web;
     using System.Threading.Tasks;
+    using Data;
 
     /**
      * The orders API allows you to create, view, update, and delete individual, or a batch, of orders.
@@ -43,9 +44,9 @@ namespace SharpCommerce.Services
         /// </summary>
         /// <param name="parameters">Parameters to filter list of orders</param>
         /// <returns>List of Orders</returns>
-        public async Task<IEnumerable<Order>> Get(Dictionary<string, string> parameters = null)
+        public async Task<IEnumerable<Order>> Get(Dictionary < string, string> parameters = null, RequestHeaderParams headerParams = null)
         {
-            return (await Get<IEnumerable<Order>>(apiEndpoint: BaseApiEndpoint, parameters: parameters));
+            return (await Get<IEnumerable<Order>>(apiEndpoint: BaseApiEndpoint, parameters: parameters, headerParams: headerParams));
         }
         
         /// <summary>
