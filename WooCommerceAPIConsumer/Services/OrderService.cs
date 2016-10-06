@@ -2,11 +2,11 @@
 
 namespace SharpCommerce.Services
 {
-    using System;
+    using Data;
     using SharpCommerce.Data.Orders;
     using SharpCommerce.Web;
+    using System;
     using System.Threading.Tasks;
-    using Data;
 
     /**
      * The orders API allows you to create, view, update, and delete individual, or a batch, of orders.

@@ -1,6 +1,7 @@
 ﻿namespace SharpCommerce.Data.Orders
 {
     using Newtonsoft.Json;
+    using System.Collections.Generic;
 
     public class ShippingLine
     {
@@ -38,6 +39,6 @@
         /// Line taxes with id and total [read-only]
         /// </summary>
         [JsonProperty("taxes")]
-        public TaxItem Taxes { get; set; }
+        public IEnumerable<TaxItem> Taxes { get; set; }
     }
 }
