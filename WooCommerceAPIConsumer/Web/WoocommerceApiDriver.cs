@@ -100,6 +100,9 @@
             var url = this.urlGenerator.GenerateRequestUrl(httpMethod, apiEndpoint, parameters);
             using (var client = new HttpClient())
             {
+                // Specify to use TLS 1.2 as default connection
+                System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12 | System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls;
+
                 using (var content = new StringContent(jsonData ?? string.Empty))
                 {
                     client.DefaultRequestHeaders.Authorization = this.urlGenerator.HttpBasicAuth();
